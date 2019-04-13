@@ -1,2 +1,2 @@
 # postcards-from-paris
-Share postcards with people around the world
+Android app to share postcards with people around the world
