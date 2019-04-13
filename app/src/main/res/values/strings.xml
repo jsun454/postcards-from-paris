@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Postcards From Paris</string>
+    <string name="user_image_description">User\'s Profile Picture</string>
 </resources>
