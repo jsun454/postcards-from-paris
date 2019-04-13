@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="com.example.jeffrey.postcardsfromparis">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.example.jeffrey.postcardsfromparis">
 
     <application
             android:allowBackup="true"
@@ -10,6 +11,22 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup, GoogleAppIndexingWarning">
+        <activity
+                android:name=".LoginActivity"
+                android:windowSoftInputMode="adjustResize|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".AuthUserActivity"/>
+        </activity>
+        <activity android:name=".AuthUserActivity">
+        </activity>
+        <activity
+                android:name=".RegisterActivity"
+                android:windowSoftInputMode="adjustResize|stateHidden">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".AuthUserActivity"/>
+        </activity>
         <activity android:name=".MailboxActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
