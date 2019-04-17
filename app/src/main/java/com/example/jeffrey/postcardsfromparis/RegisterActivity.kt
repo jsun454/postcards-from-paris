@@ -23,44 +23,44 @@ class RegisterActivity : AppCompatActivity() {
         supportActionBar?.title = "Registration"
 
         activity_register_btn_register.setOnClickListener {
+            // TODO: prevent multiple clicks in rapid succession
             registerUser()
         }
     }
 
     private fun registerUser() {
-        synchronized(this) {
-            val name = activity_register_et_name.text.toString()
-            val email = activity_register_et_email.text.toString()
-            val password = activity_register_et_password.text.toString()
+        val name = activity_register_et_name.text.toString()
+        val email = activity_register_et_email.text.toString()
+        val password = activity_register_et_password.text.toString()
 
-            if(name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter name/email/password", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnSuccessListener {
-                    Log.i(TAG, "Successfully created user with ID: ${it.user.uid}")
-                    Toast.makeText(this, "Creating user...", Toast.LENGTH_SHORT).show()
-
-                    val user = User(it.user.uid, name, "")
-                    val ref = FirebaseDatabase.getInstance().getReference("/users/${it.user.uid}")
-                    ref.setValue(user)
-                        .addOnSuccessListener {
-                            Log.i(TAG, "Successfully saved user to database")
-
-                            val intent = Intent(this, MailboxActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                        }
-                        .addOnFailureListener {
-                            Log.e(TAG, "Failed to save user to database: ${it.message}")
-                        }
-                }
-                .addOnFailureListener {
-                    Log.w(TAG, "Failed to create user: ${it.message}")
-                    Toast.makeText(this, "Registration failed: ${it.message}", Toast.LENGTH_SHORT).show()
-                }
+        if(name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please enter name/email/password", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                Log.i(TAG, "Successfully created user with ID: ${it.user.uid}")
+                Toast.makeText(this, "Creating user...", Toast.LENGTH_SHORT).show()
+
+                val user = User(it.user.uid, name, "")
+                val ref = FirebaseDatabase.getInstance().getReference("/users/${it.user.uid}")
+                ref.setValue(user)
+                    .addOnSuccessListener {
+                        Log.i(TAG, "Successfully saved user to database")
+
+                        val intent = Intent(this, NewUserImageActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e(TAG, "Failed to save user to database: ${e.message}")
+                        Toast.makeText(this, "Error: {$e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            .addOnFailureListener {
+                Log.w(TAG, "Failed to create user: ${it.message}")
+                Toast.makeText(this, "Registration failed: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }
