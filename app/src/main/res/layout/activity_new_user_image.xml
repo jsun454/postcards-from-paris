@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".NewUserImageActivity"
+        tools:ignore="HardcodedText">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <RelativeLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp">
+
+            <ImageView
+                    android:id="@+id/activity_new_user_image_img_profile_picture"
+                    android:background="@android:color/white"
+                    android:src="#7C7C7C"
+                    android:scaleType="centerCrop"
+                    android:cropToPadding="true"
+                    android:contentDescription="@string/user_image_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="16dp"/>
+
+            <TextView
+                    android:id="@+id/activity_new_user_image_txt_select_photo"
+                    android:text="Select photo"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+        <Button
+                android:id="@+id/activity_new_user_image_btn_use_photo"
+                android:text="Use Photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/activity_new_user_image_txt_skip"
+            android:text="Maybe later"
+            android:textSize="24sp"
+            android:drawableEnd="@android:drawable/ic_media_play"
+            android:drawableRight="@android:drawable/ic_media_play"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+</RelativeLayout>
