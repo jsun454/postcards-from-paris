@@ -11,12 +11,19 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="AllowBackup, GoogleAppIndexingWarning">
+        <activity android:name=".NewUserImageActivity">
+        </activity>
+        <activity android:name=".NewPostcardActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MailboxActivity"/>
+        </activity>
         <activity
                 android:name=".LoginActivity"
                 android:windowSoftInputMode="adjustResize|stateHidden">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".AuthUserActivity"/>
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".AuthUserActivity"/>
         </activity>
         <activity android:name=".AuthUserActivity">
         </activity>
