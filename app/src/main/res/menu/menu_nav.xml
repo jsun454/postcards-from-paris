@@ -2,13 +2,19 @@
 <menu
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:ignore="HardcodedText">
+
+    <item
+            android:id="@+id/menu_nav_options"
+            android:icon="@android:drawable/ic_menu_manage"
+            android:title="Options"
+            app:showAsAction="ifRoom"/>
 
     <item
             android:id="@+id/menu_nav_new_postcard"
             android:icon="@android:drawable/ic_menu_edit"
             android:title="Send"
-            app:showAsAction="ifRoom"
-            tools:ignore="HardcodedText"/>
+            app:showAsAction="ifRoom"/>
 
 </menu>

@@ -26,13 +26,17 @@ class MailboxActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if(item?.itemId == R.id.menu_nav_new_postcard) {
-            FirebaseAuth.getInstance().signOut()
-            val intent = Intent(this, AuthUserActivity::class.java)
-            // TODO: delete above 2 lines, uncomment below 1 line
-            // val intent = Intent(this, NewPostcardActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+        when(item?.itemId) {
+            R.id.menu_nav_options -> {
+                val intent = Intent(this, OptionsActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+            }
+            R.id.menu_nav_new_postcard -> {
+                val intent = Intent(this, NewPostcardActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+            }
         }
 
         return super.onOptionsItemSelected(item)
