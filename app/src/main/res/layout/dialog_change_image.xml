@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <TextView
+            android:text="@string/change_image"
+            android:textSize="24sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+            android:layout_width="160dp"
+            android:layout_height="160dp">
+
+        <ImageView
+                android:id="@+id/dialog_change_image_img_profile_picture"
+                android:contentDescription="@string/user_image_description"
+                android:background="@android:color/white"
+                android:src="#7C7C7C"
+                android:scaleType="centerCrop"
+                android:cropToPadding="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"/>
+
+        <TextView
+                android:id="@+id/dialog_change_image_txt_select_photo"
+                android:text="@string/pick_image"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="ButtonStyle, HardcodedText">
+
+        <Button
+                android:id="@+id/dialog_change_image_btn_cancel"
+                android:text="Cancel"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+        <Button
+                android:id="@+id/dialog_change_image_btn_save"
+                android:text="Save"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</LinearLayout>
