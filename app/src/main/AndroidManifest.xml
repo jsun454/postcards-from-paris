@@ -13,8 +13,8 @@
             tools:ignore="AllowBackup, GoogleAppIndexingWarning">
         <activity android:name=".OptionsActivity">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MailboxActivity"/>
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MailboxActivity"/>
         </activity>
         <activity android:name=".NewUserImageActivity">
         </activity>
