@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Postcards From Paris</string>
     <string name="user_image_description">User\'s Profile Picture</string>
+    <string name="change_name">Change Name</string>
+    <string name="change_image">Change Profile Picture</string>
+    <string name="pick_image">Select photo</string>
 </resources>

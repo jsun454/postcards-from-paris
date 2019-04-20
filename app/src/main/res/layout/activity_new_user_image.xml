@@ -31,7 +31,7 @@
 
             <TextView
                     android:id="@+id/activity_new_user_image_txt_select_photo"
-                    android:text="Select photo"
+                    android:text="@string/pick_image"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

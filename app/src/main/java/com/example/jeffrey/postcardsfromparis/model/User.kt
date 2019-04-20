@@ -4,6 +4,6 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class User(val uid: String, var name: String, var imgUrl: String): Parcelable {
+class User(private val uid: String, var name: String, var imgUrl: String): Parcelable {
     constructor(): this("", "", "")
 }

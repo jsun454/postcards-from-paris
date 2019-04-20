@@ -1,7 +1,6 @@
 package com.example.jeffrey.postcardsfromparis
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
@@ -104,7 +103,7 @@ class NewUserImageActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+        if(requestCode == 0 && resultCode == RESULT_OK && data != null) {
             uri = data.data
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
 

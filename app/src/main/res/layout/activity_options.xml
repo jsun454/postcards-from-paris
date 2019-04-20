@@ -5,18 +5,17 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".OptionsActivity"
-        tools:ignore="HardcodedText">
+        tools:context=".OptionsActivity">
 
     <Button
             android:id="@+id/activity_options_btn_change_name"
-            android:text="Change Name"
+            android:text="@string/change_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
     <Button
             android:id="@+id/activity_options_btn_change_picture"
-            android:text="Change Profile Picture"
+            android:text="@string/change_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -24,6 +23,7 @@
             android:id="@+id/activity_options_btn_log_out"
             android:text="Log Out"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText"/>
 
 </LinearLayout>
