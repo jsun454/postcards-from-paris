@@ -8,7 +8,7 @@
         android:layout_height="match_parent">
 
     <TextView
-            android:text="@string/change_image"
+            android:text="@string/change_profile_picture"
             android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -21,7 +21,7 @@
                 android:id="@+id/dialog_change_image_img_profile_picture"
                 android:contentDescription="@string/user_image_description"
                 android:background="@android:color/white"
-                android:src="#7C7C7C"
+                android:src="@color/colorDefault"
                 android:scaleType="centerCrop"
                 android:cropToPadding="true"
                 android:layout_width="match_parent"
@@ -41,18 +41,18 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:ignore="ButtonStyle, HardcodedText">
+            tools:ignore="ButtonStyle">
 
         <Button
                 android:id="@+id/dialog_change_image_btn_cancel"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
 
         <Button
                 android:id="@+id/dialog_change_image_btn_save"
-                android:text="Save"
+                android:text="@string/save"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
