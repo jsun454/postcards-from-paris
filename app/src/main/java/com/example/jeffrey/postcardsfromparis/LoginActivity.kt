@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
         val email = activity_login_et_email.text.toString()
         val password = activity_login_et_password.text.toString()
 
-        if (email.isEmpty() || password.isEmpty()) {
+        if(email.isEmpty() || password.isEmpty()) {
             toast("Please enter email/password")
             return
         }
