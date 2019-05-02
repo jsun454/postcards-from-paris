@@ -1,11 +1,14 @@
 package com.example.jeffrey.postcardsfromparis
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import com.example.jeffrey.postcardsfromparis.model.User
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.longToast
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_register.*
@@ -34,14 +37,14 @@ class RegisterActivity : AppCompatActivity() {
         val password = activity_register_et_password.text.toString()
 
         if(name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter name/email/password", Toast.LENGTH_SHORT).show()
+            toast("Please enter name/email/password")
             return
         }
 
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 Log.i(TAG, "Successfully created user with ID: ${it.user.uid}")
-                Toast.makeText(this, "Creating user...", Toast.LENGTH_SHORT).show()
+                longToast("Creating user...")
 
                 val user = User(it.user.uid, name, "")
                 val ref = FirebaseDatabase.getInstance().getReference("/users/${it.user.uid}")
@@ -49,18 +52,16 @@ class RegisterActivity : AppCompatActivity() {
                     .addOnSuccessListener {
                         Log.i(TAG, "Successfully saved user to database")
 
-                        val intent = Intent(this, NewUserImageActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
+                        startActivity<NewUserImageActivity>(CLEAR_TASK or NEW_TASK)
                     }
                     .addOnFailureListener { e ->
                         Log.e(TAG, "Failed to save user to database: ${e.message}")
-                        Toast.makeText(this, "Error: {$e.message}", Toast.LENGTH_SHORT).show()
+                        toast("Error: {$e.message}")
                     }
             }
             .addOnFailureListener {
                 Log.w(TAG, "Failed to create user: ${it.message}")
-                Toast.makeText(this, "Registration failed: ${it.message}", Toast.LENGTH_SHORT).show()
+                toast("Registration failed: ${it.message}")
             }
     }
 }

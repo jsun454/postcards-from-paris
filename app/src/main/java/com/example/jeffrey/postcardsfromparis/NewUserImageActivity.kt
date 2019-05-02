@@ -7,8 +7,12 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
 import com.example.jeffrey.postcardsfromparis.model.User
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.longToast
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -38,66 +42,13 @@ class NewUserImageActivity : AppCompatActivity() {
 
         activity_new_user_image_btn_use_photo.setOnClickListener {
             // TODO: prevent multiple clicks in rapid succession
-            if (uri == null) {
-                Toast.makeText(this, "Please add a photo first", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Saving image...", Toast.LENGTH_SHORT).show()
-
-                val image = UUID.randomUUID().toString()
-                val ref = FirebaseStorage.getInstance().getReference("images/$image")
-                ref.putFile(uri!!)
-                    .addOnSuccessListener {
-                        Log.i(TAG, "Successfully saved user profile image to storage: ${it.metadata?.path}")
-                        Toast.makeText(this, "Saving image...", Toast.LENGTH_SHORT).show()
-
-                        ref.downloadUrl.addOnSuccessListener { dUrl ->
-                            Log.i(TAG, "Image file location: $dUrl")
-
-                            val uid = FirebaseAuth.getInstance().uid
-                            val uRef = FirebaseDatabase.getInstance().getReference("/users/$uid")
-                            uRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                                override fun onDataChange(p0: DataSnapshot) {
-                                    val user = p0.getValue(User::class.java)
-                                    user?.imgUrl = dUrl.toString()
-                                    uRef.setValue(user)
-                                        .addOnSuccessListener {
-                                            Log.i(TAG, "Successfully updated database with new user profile " +
-                                                    "image")
-                                            Toast.makeText(this@NewUserImageActivity, "Successfully " +
-                                                    "saved image", Toast.LENGTH_SHORT).show()
-
-                                            val intent = Intent(this@NewUserImageActivity,
-                                                    MailboxActivity::class.java)
-                                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or
-                                                    Intent.FLAG_ACTIVITY_NEW_TASK
-                                            startActivity(intent)
-                                        }
-                                        .addOnFailureListener { e ->
-                                            Log.e(TAG, "Failed to update database with new user profile " +
-                                                    "image: ${e.message}")
-                                            Toast.makeText(this@NewUserImageActivity, "Error: {$e.message}",
-                                                    Toast.LENGTH_SHORT).show()
-                                        }
-                                }
-
-                                override fun onCancelled(p0: DatabaseError) {}
-                            })
-                        }
-                    }
-                    .addOnFailureListener {
-                        Log.e(TAG, "Failed to save user profile image to storage: ${it.message}")
-                        Toast.makeText(this, "Failed to save image: ${it.message}", Toast.LENGTH_SHORT)
-                                .show()
-                    }
-            }
+            saveImage()
         }
 
         activity_new_user_image_txt_skip.setOnClickListener {
             activity_new_user_image_txt_skip.isClickable = false
 
-            val intent = Intent(this, MailboxActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+            startActivity<MailboxActivity>(CLEAR_TASK or NEW_TASK)
         }
     }
 
@@ -111,6 +62,52 @@ class NewUserImageActivity : AppCompatActivity() {
 
             activity_new_user_image_img_profile_picture.setImageBitmap(bitmap)
             activity_new_user_image_txt_select_photo.text = "Change Photo"
+        }
+    }
+
+    private fun saveImage() {
+        if (uri == null) {
+            toast("Please add a photo first")
+        } else {
+            longToast("Saving image...")
+
+            val image = UUID.randomUUID().toString()
+            val ref = FirebaseStorage.getInstance().getReference("images/$image")
+            ref.putFile(uri!!)
+                .addOnSuccessListener {
+                    Log.i(TAG, "Successfully saved user profile image to storage: ${it.metadata?.path}")
+
+                    ref.downloadUrl.addOnSuccessListener { dUrl ->
+                        Log.i(TAG, "Image file location: $dUrl")
+
+                        val uid = FirebaseAuth.getInstance().uid
+                        val uRef = FirebaseDatabase.getInstance().getReference("/users/$uid")
+                        uRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(p0: DataSnapshot) {
+                                val user = p0.getValue(User::class.java)
+                                user?.imgUrl = dUrl.toString()
+                                uRef.setValue(user)
+                                    .addOnSuccessListener {
+                                        Log.i(TAG, "Successfully updated database with new user profile image")
+                                        toast("Successfully saved image")
+
+                                        startActivity<MailboxActivity>(CLEAR_TASK or NEW_TASK)
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.e(TAG, "Failed to update database with new user profile image: " +
+                                                "${e.message}")
+                                        toast("Error: {$e.message}")
+                                    }
+                            }
+
+                            override fun onCancelled(p0: DatabaseError) {}
+                        })
+                    }
+                }
+                .addOnFailureListener {
+                    Log.e(TAG, "Failed to save user profile image to storage: ${it.message}")
+                    toast("Failed to save image: ${it.message}")
+                }
         }
     }
 }

@@ -1,10 +1,12 @@
 package com.example.jeffrey.postcardsfromparis
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -22,6 +24,7 @@ class LoginActivity : AppCompatActivity() {
 
         activity_login_btn_login.setOnClickListener {
             activity_login_btn_login.isClickable = false
+
             verifyUser()
         }
     }
@@ -31,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
         val password = activity_login_et_password.text.toString()
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter email/password", Toast.LENGTH_SHORT).show()
+            toast("Please enter email/password")
             return
         }
 
@@ -39,13 +42,11 @@ class LoginActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Log.i(TAG, "Successfully logged in as user: ${it.user.uid}")
 
-                val intent = Intent(this, MailboxActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
+                startActivity<MailboxActivity>(CLEAR_TASK or NEW_TASK)
             }
             .addOnFailureListener {
                 Log.w(TAG, "Failed to log in as user: ${it.message}")
-                Toast.makeText(this, "Login failed: ${it.message}", Toast.LENGTH_SHORT).show()
+                toast("Login failed: ${it.message}")
 
                 activity_login_btn_login.isClickable = true
             }

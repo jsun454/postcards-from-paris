@@ -1,8 +1,9 @@
 package com.example.jeffrey.postcardsfromparis
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
 import kotlinx.android.synthetic.main.activity_auth_user.*
 
 class AuthUserActivity : AppCompatActivity() {
@@ -15,18 +16,14 @@ class AuthUserActivity : AppCompatActivity() {
             activity_auth_user_btn_register.isClickable = false
             activity_auth_user_btn_login.isClickable = false
 
-            val intent = Intent(this, RegisterActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+            startActivity<RegisterActivity>(NEW_TASK)
         }
 
         activity_auth_user_btn_login.setOnClickListener {
             activity_auth_user_btn_register.isClickable = false
             activity_auth_user_btn_login.isClickable = false
 
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+            startActivity<LoginActivity>(NEW_TASK)
         }
     }
 
