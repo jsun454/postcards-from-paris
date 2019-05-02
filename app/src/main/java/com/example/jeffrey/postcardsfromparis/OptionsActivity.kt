@@ -2,12 +2,12 @@ package com.example.jeffrey.postcardsfromparis
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import com.example.jeffrey.postcardsfromparis.model.User
@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.dialog_change_image.*
 import kotlinx.android.synthetic.main.dialog_change_name.*
 import java.util.*
 
-@SuppressLint("InflateParams, SetTextI18n")
+@SuppressLint("InflateParams")
 class OptionsActivity : AppCompatActivity() {
 
     companion object {
@@ -80,7 +80,7 @@ class OptionsActivity : AppCompatActivity() {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
 
             imageDialog.dialog_change_image_img_profile_picture.setImageBitmap(bitmap)
-            imageDialog.dialog_change_image_txt_select_photo.text = "Change Photo"
+            imageDialog.dialog_change_image_txt_select_photo.text = getString(R.string.change_image)
         }
     }
 
@@ -174,7 +174,6 @@ class OptionsActivity : AppCompatActivity() {
                             val uid = FirebaseAuth.getInstance().uid
                             val uRef = FirebaseDatabase.getInstance().getReference("/users/$uid")
                             uRef.addListenerForSingleValueEvent(object: ValueEventListener {
-                                @SuppressLint("SetTextI18n")
                                 override fun onDataChange(p0: DataSnapshot) {
                                     val user = p0.getValue(User::class.java)
                                     user?.imgUrl = iUri.toString()
@@ -184,9 +183,13 @@ class OptionsActivity : AppCompatActivity() {
                                             toast("Successfully updated profile picture")
 
                                             uri = null
-                                            imageDialog.dialog_change_image_img_profile_picture.setImageDrawable(
-                                                    ColorDrawable(Color.parseColor("#7C7C7C")))
-                                            imageDialog.dialog_change_image_txt_select_photo.text = "Select Photo"
+
+                                            val color = ContextCompat.getColor(baseContext, R.color.colorDefault)
+                                            val cd = ColorDrawable(color)
+                                            imageDialog.dialog_change_image_img_profile_picture.setImageDrawable(cd)
+
+                                            imageDialog.dialog_change_image_txt_select_photo.text =
+                                                getString(R.string.pick_image)
                                             imageDialog.dismiss()
 
                                             displayUserInfo(UPDATE_IMAGE)
@@ -211,9 +214,12 @@ class OptionsActivity : AppCompatActivity() {
 
         imageDialog.dialog_change_image_btn_cancel.setOnClickListener {
             uri = null
-            imageDialog.dialog_change_image_img_profile_picture.setImageDrawable(ColorDrawable(
-                Color.parseColor("#7C7C7C")))
-            imageDialog.dialog_change_image_txt_select_photo.text = "Select Photo"
+
+            val color = ContextCompat.getColor(baseContext, R.color.colorDefault)
+            val cd = ColorDrawable(color)
+            imageDialog.dialog_change_image_img_profile_picture.setImageDrawable(cd)
+
+            imageDialog.dialog_change_image_txt_select_photo.text = getString(R.string.pick_image)
             imageDialog.dismiss()
         }
     }

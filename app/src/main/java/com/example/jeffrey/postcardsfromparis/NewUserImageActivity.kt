@@ -1,6 +1,5 @@
 package com.example.jeffrey.postcardsfromparis
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
@@ -52,7 +51,6 @@ class NewUserImageActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -61,7 +59,7 @@ class NewUserImageActivity : AppCompatActivity() {
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
 
             activity_new_user_image_img_profile_picture.setImageBitmap(bitmap)
-            activity_new_user_image_txt_select_photo.text = "Change Photo"
+            activity_new_user_image_txt_select_photo.text = getString(R.string.change_image)
         }
     }
 
