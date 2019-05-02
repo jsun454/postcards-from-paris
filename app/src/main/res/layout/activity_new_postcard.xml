@@ -19,14 +19,14 @@
             <ImageView
                     android:id="@+id/activity_new_postcard_img_postcard_picture"
                     android:contentDescription="Postcard Picture"
-                    android:src="#7C7C7C"
+                    android:src="@color/colorDefault"
                     android:scaleType="centerCrop"
                     android:layout_width="match_parent"
                     android:layout_height="280dp"/>
 
             <TextView
                     android:id="@+id/activity_new_postcard_txt_select_photo"
-                    android:text="Select Photo"
+                    android:text="@string/pick_image"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -34,6 +34,9 @@
         </RelativeLayout>
 
         <RelativeLayout
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -77,7 +80,7 @@
 
         <EditText
                 android:id="@+id/activity_new_postcard_et_postcard_message"
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:hint="Write a message"
                 android:gravity="top"
                 android:layout_width="match_parent"
