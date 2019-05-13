@@ -1,6 +1,7 @@
 package com.example.jeffrey.postcardsfromparis
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -10,6 +11,7 @@ import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
@@ -108,7 +110,34 @@ class OptionsActivity : AppCompatActivity() {
     }
 
     private fun showNameDialog() {
+        // TODO: fix this; keyboard should automatically pop up when name change dialog opens, and close when the dialog closes
+        // TODO: edittext should receive focus when dialog opens, and the focuslistener should display the keyboard when focused is true
+        // TODO: when the user clicks in the dialog but outside the edittext, that part should receive focus (add this in xml)
+        // TODO: when the edittext loses focus, hide the keyboard
+        // TODO: move all the view component listeners to nameDialog.onshowlistener (do the same for showimagedialog())
+        nameDialog.setOnCancelListener {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(nameDialog.window?.decorView?.rootView?.windowToken, 0)
+        }
+
+        nameDialog.setOnDismissListener {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(nameDialog.window?.decorView?.rootView?.windowToken, 0)
+        }
+
         nameDialog.show()
+
+        nameDialog.dialog_change_name_et_new_name.setOnFocusChangeListener { view, b ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            if(b) {
+//                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                imm.showSoftInput(nameDialog.dialog_change_name_et_new_name, InputMethodManager.SHOW_FORCED)
+            } else {
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+            }
+        }
+
+        nameDialog.dialog_change_name_et_new_name.requestFocus()
 
         nameDialog.dialog_change_name_btn_save.setOnClickListener {
             val newName = nameDialog.dialog_change_name_et_new_name.text.toString()
@@ -156,9 +185,14 @@ class OptionsActivity : AppCompatActivity() {
         }
 
         imageDialog.dialog_change_image_btn_save.setOnClickListener {
+            imageDialog.dialog_change_image_btn_save.isClickable = false
+
             // TODO: prevent multiple clicks in rapid succession
+
             if(uri == null) {
                 toast("Please add a photo")
+
+                imageDialog.dialog_change_image_btn_save.isClickable = true
             } else {
                 longToast("Updating image...")
 
@@ -198,6 +232,8 @@ class OptionsActivity : AppCompatActivity() {
                                             Log.e(TAG, "Failed to update database with new user profile image: " +
                                                     "${e.message}")
                                             toast("Failed to update profile picture: {$e.message}")
+
+                                            imageDialog.dialog_change_image_btn_save.isClickable = true
                                         }
                                 }
 
@@ -208,6 +244,8 @@ class OptionsActivity : AppCompatActivity() {
                     .addOnFailureListener {
                         Log.e(TAG, "Failed to update user profile image: ${it.message}")
                         toast("Failed to update profile picture: ${it.message}")
+
+                        imageDialog.dialog_change_image_btn_save.isClickable = true
                     }
             }
         }

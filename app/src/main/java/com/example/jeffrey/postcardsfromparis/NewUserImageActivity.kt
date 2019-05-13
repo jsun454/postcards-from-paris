@@ -40,11 +40,16 @@ class NewUserImageActivity : AppCompatActivity() {
         }
 
         activity_new_user_image_btn_use_photo.setOnClickListener {
+            activity_new_user_image_btn_use_photo.isClickable = false
+            activity_new_user_image_txt_skip.isClickable = false
+
             // TODO: prevent multiple clicks in rapid succession
+
             saveImage()
         }
 
         activity_new_user_image_txt_skip.setOnClickListener {
+            activity_new_user_image_btn_use_photo.isClickable = false
             activity_new_user_image_txt_skip.isClickable = false
 
             startActivity<MailboxActivity>(CLEAR_TASK or NEW_TASK)
@@ -66,6 +71,9 @@ class NewUserImageActivity : AppCompatActivity() {
     private fun saveImage() {
         if (uri == null) {
             toast("Please add a photo first")
+
+            activity_new_user_image_btn_use_photo.isClickable = true
+            activity_new_user_image_txt_skip.isClickable = true
         } else {
             longToast("Saving image...")
 
@@ -95,6 +103,9 @@ class NewUserImageActivity : AppCompatActivity() {
                                         Log.e(TAG, "Failed to update database with new user profile image: " +
                                                 "${e.message}")
                                         toast("Error: {$e.message}")
+
+                                        activity_new_user_image_btn_use_photo.isClickable = true
+                                        activity_new_user_image_txt_skip.isClickable = true
                                     }
                             }
 
@@ -105,6 +116,9 @@ class NewUserImageActivity : AppCompatActivity() {
                 .addOnFailureListener {
                     Log.e(TAG, "Failed to save user profile image to storage: ${it.message}")
                     toast("Failed to save image: ${it.message}")
+
+                    activity_new_user_image_btn_use_photo.isClickable = true
+                    activity_new_user_image_txt_skip.isClickable = true
                 }
         }
     }
