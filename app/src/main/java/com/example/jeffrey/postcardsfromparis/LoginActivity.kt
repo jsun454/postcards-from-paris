@@ -32,15 +32,8 @@ class LoginActivity : AppCompatActivity(), GestureDetector.OnGestureListener, Ge
         detector = GestureDetectorCompat(this, this)
         detector.setOnDoubleTapListener(this)
 
-        activity_login_sv_background.setOnTouchListener { _, motionEvent ->
-            detector.onTouchEvent(motionEvent)
-        }
-
-        activity_login_et_email.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus) {
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT)
-            }
+        activity_login_sv_background.setOnTouchListener { _, event ->
+            detector.onTouchEvent(event)
         }
 
         activity_login_btn_login.setOnClickListener {

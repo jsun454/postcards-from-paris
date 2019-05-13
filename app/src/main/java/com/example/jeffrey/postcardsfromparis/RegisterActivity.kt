@@ -1,8 +1,13 @@
 package com.example.jeffrey.postcardsfromparis
 
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.view.GestureDetectorCompat
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
@@ -13,11 +18,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_register.*
 
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity(), GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
 
     companion object {
         private val TAG = RegisterActivity::class.java.simpleName
     }
+
+    private lateinit var detector: GestureDetectorCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +32,18 @@ class RegisterActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Registration"
 
+        detector = GestureDetectorCompat(this, this)
+        detector.setOnDoubleTapListener(this)
+
+        activity_register_sv_background.setOnTouchListener { _, event ->
+            detector.onTouchEvent(event)
+        }
+
         activity_register_btn_register.setOnClickListener {
+            activity_register_btn_register.isClickable = false
+
             // TODO: prevent multiple clicks in rapid succession
+
             registerUser()
         }
     }
@@ -38,6 +55,9 @@ class RegisterActivity : AppCompatActivity() {
 
         if(name.isEmpty() || email.isEmpty() || password.isEmpty()) {
             toast("Please enter name/email/password")
+
+            activity_register_btn_register.isClickable = true
+
             return
         }
 
@@ -62,6 +82,32 @@ class RegisterActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Log.w(TAG, "Failed to create user: ${it.message}")
                 toast("Registration failed: ${it.message}")
+
+                activity_register_btn_register.isClickable = true
             }
     }
+
+    override fun onSingleTapUp(e: MotionEvent?): Boolean {
+        activity_register_et_name.clearFocus()
+        activity_register_et_email.clearFocus()
+        activity_register_et_password.clearFocus()
+
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(window.decorView.rootView.windowToken, 0)
+
+        return true
+    }
+
+    override fun onDown(e: MotionEvent?): Boolean {
+        return activity_register_et_name.hasFocus() || activity_register_et_email.hasFocus() ||
+                activity_register_et_password.hasFocus()
+    }
+
+    override fun onShowPress(e: MotionEvent?) {}
+    override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean = true
+    override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean = true
+    override fun onLongPress(e: MotionEvent?) {}
+    override fun onDoubleTap(e: MotionEvent?): Boolean = true
+    override fun onDoubleTapEvent(e: MotionEvent?): Boolean = true
+    override fun onSingleTapConfirmed(e: MotionEvent?): Boolean = true
 }
