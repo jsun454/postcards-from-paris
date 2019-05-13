@@ -30,10 +30,11 @@ class NewPostcardActivity : AppCompatActivity() {
         displayUserInfo()
 
         activity_new_postcard_img_postcard_picture.setOnClickListener {
+            activity_new_postcard_et_postcard_message.clearFocus()
+
             startActivityForResult(Intent(Intent.ACTION_PICK).setType("image/*"), 0)
         }
 
-        // TODO: do this for all the other edit texts
         activity_new_postcard_et_postcard_message.setOnFocusChangeListener { view, b ->
             if(!b) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
