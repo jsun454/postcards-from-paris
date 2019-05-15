@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
 import android.util.Log
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import com.example.jeffrey.postcardsfromparis.model.User
@@ -14,11 +13,12 @@ import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.longToast
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
+import com.example.jeffrey.postcardsfromparis.util.SingleTapGestureListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_register.*
 
-class RegisterActivity : AppCompatActivity(), GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
+class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
 
     companion object {
         private val TAG = RegisterActivity::class.java.simpleName
@@ -102,12 +102,4 @@ class RegisterActivity : AppCompatActivity(), GestureDetector.OnGestureListener,
         return activity_register_et_name.hasFocus() || activity_register_et_email.hasFocus() ||
                 activity_register_et_password.hasFocus()
     }
-
-    override fun onShowPress(e: MotionEvent?) {}
-    override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean = true
-    override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean = true
-    override fun onLongPress(e: MotionEvent?) {}
-    override fun onDoubleTap(e: MotionEvent?): Boolean = true
-    override fun onDoubleTapEvent(e: MotionEvent?): Boolean = true
-    override fun onSingleTapConfirmed(e: MotionEvent?): Boolean = true
 }
