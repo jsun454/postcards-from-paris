@@ -41,16 +41,8 @@ class OptionsActivity : AppCompatActivity() {
     }
 
     private var uri: Uri? = null
-
-    private val nameDialog: AlertDialog by lazy {
-        val view = layoutInflater.inflate(R.layout.dialog_change_name, null)
-        return@lazy AlertDialog.Builder(this).setView(view).create()
-    }
-
-    private val imageDialog: AlertDialog by lazy {
-        val view = layoutInflater.inflate(R.layout.dialog_change_image, null)
-        return@lazy AlertDialog.Builder(this).setView(view).create()
-    }
+    private var nameDialog: AlertDialog? = null
+    private var imageDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +53,21 @@ class OptionsActivity : AppCompatActivity() {
         displayUserInfo()
 
         activity_options_btn_change_name.setOnClickListener {
-            showNameDialog()
+            if(nameDialog == null) {
+                val view = layoutInflater.inflate(R.layout.dialog_change_name, null)
+                nameDialog = AlertDialog.Builder(this).setView(view).create()
+                setNameDialogListeners()
+            }
+            nameDialog?.show()
         }
 
         activity_options_btn_change_picture.setOnClickListener {
-            showImageDialog()
+            if(imageDialog == null) {
+                val view = layoutInflater.inflate(R.layout.dialog_change_image, null)
+                imageDialog = AlertDialog.Builder(this).setView(view).create()
+                setImageDialogListeners()
+            }
+            imageDialog?.show()
         }
 
         activity_options_btn_log_out.setOnClickListener {
@@ -81,8 +83,9 @@ class OptionsActivity : AppCompatActivity() {
             uri = data.data
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
 
-            imageDialog.dialog_change_image_img_profile_picture.setImageBitmap(bitmap)
-            imageDialog.dialog_change_image_txt_select_photo.text = getString(R.string.change_image)
+            val imageDialog = imageDialog ?: return
+            imageDialog.dialog_change_image_img_profile_picture?.setImageBitmap(bitmap)
+            imageDialog.dialog_change_image_txt_select_photo?.text = getString(R.string.change_image)
         }
     }
 
@@ -109,156 +112,178 @@ class OptionsActivity : AppCompatActivity() {
         })
     }
 
-    private fun showNameDialog() {
-        // TODO: fix this; keyboard should automatically pop up when name change dialog opens, and close when the dialog closes
-        // TODO: edittext should receive focus when dialog opens, and the focuslistener should display the keyboard when focused is true
-        // TODO: when the user clicks in the dialog but outside the edittext, that part should receive focus (add this in xml)
-        // TODO: when the edittext loses focus, hide the keyboard
-        // TODO: move all the view component listeners to nameDialog.onshowlistener (do the same for showimagedialog())
-        nameDialog.setOnCancelListener {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(nameDialog.window?.decorView?.rootView?.windowToken, 0)
-        }
-
-        nameDialog.setOnDismissListener {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(nameDialog.window?.decorView?.rootView?.windowToken, 0)
-        }
-
-        nameDialog.show()
-
-        nameDialog.dialog_change_name_et_new_name.setOnFocusChangeListener { view, b ->
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            if(b) {
-//                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-                imm.showSoftInput(nameDialog.dialog_change_name_et_new_name, InputMethodManager.SHOW_FORCED)
-            } else {
-                imm.hideSoftInputFromWindow(view.windowToken, 0)
-            }
-        }
-
-        nameDialog.dialog_change_name_et_new_name.requestFocus()
-
-        nameDialog.dialog_change_name_btn_save.setOnClickListener {
-            val newName = nameDialog.dialog_change_name_et_new_name.text.toString()
-            if(newName.isEmpty()) {
-                toast("Please enter a valid name")
-            } else {
-                val uid = FirebaseAuth.getInstance().uid
-                val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
-                ref.addListenerForSingleValueEvent(object: ValueEventListener {
-                    override fun onDataChange(p0: DataSnapshot) {
-                        val user = p0.getValue(User::class.java)
-                        user?.name = newName
-                        ref.setValue(user)
-                            .addOnSuccessListener {
-                                Log.i(TAG, "Successfully updated user name: ${user?.name}")
-                                toast("Name successfully updated")
-
-                                nameDialog.dialog_change_name_et_new_name.text.clear()
-                                nameDialog.dismiss()
-
-                                displayUserInfo(UPDATE_NAME)
-                            }
-                            .addOnFailureListener {
-                                Log.e(TAG, "Failed to update user name: ${it.message}")
-                                toast("Error: ${it.message}")
-                            }
+    private fun setNameDialogListeners() {
+        nameDialog?.apply {
+            setOnShowListener {
+                dialog_change_name_et_new_name.setOnFocusChangeListener { view, b ->
+                    Log.d(TAG, "et is focused?: $b")
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    if(b) {
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                    } else {
+                        // TODO: fix: keyboard opens when: open dialog > hide keyboard with phone back key, click outside edittext in dialog
+                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+                        imm.hideSoftInputFromWindow(view.applicationWindowToken, 0)
+                        // window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
                     }
+                }
 
-                    override fun onCancelled(p0: DatabaseError) {}
-                })
+                dialog_change_name_btn_save.setOnClickListener {
+                    val newName = dialog_change_name_et_new_name.text.toString()
+                    if(newName.isEmpty()) {
+                        toast("Please enter a valid name")
+                    } else {
+                        val uid = FirebaseAuth.getInstance().uid
+                        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+                        ref.addListenerForSingleValueEvent(object: ValueEventListener {
+                            override fun onDataChange(p0: DataSnapshot) {
+                                val user = p0.getValue(User::class.java)
+                                user?.name = newName
+                                ref.setValue(user)
+                                    .addOnSuccessListener {
+                                        Log.i(TAG, "Successfully updated user name: ${user?.name}")
+                                        toast("Name successfully updated")
+
+                                        dismiss()
+
+                                        displayUserInfo(UPDATE_NAME)
+                                    }
+                                    .addOnFailureListener {
+                                        Log.e(TAG, "Failed to update user name: ${it.message}")
+                                        toast("Error: ${it.message}")
+                                    }
+                            }
+
+                            override fun onCancelled(p0: DatabaseError) {}
+                        })
+                    }
+                }
+
+                dialog_change_name_btn_cancel.setOnClickListener {
+                    dismiss()
+                }
+
+                dialog_change_name_et_new_name.requestFocus()
             }
-        }
 
-        nameDialog.dialog_change_name_btn_cancel.setOnClickListener {
-            nameDialog.dialog_change_name_et_new_name.text.clear()
-            nameDialog.dismiss()
+            setOnCancelListener {
+                dialog_change_name_et_new_name.text.clear()
+                dialog_change_name_et_new_name.clearFocus()
+
+                dialog_change_name_et_new_name.onFocusChangeListener = null
+                dialog_change_name_btn_save.setOnClickListener(null)
+                dialog_change_name_btn_cancel.setOnClickListener(null)
+            }
+
+            setOnDismissListener {
+                dialog_change_name_et_new_name.text.clear()
+                dialog_change_name_et_new_name.clearFocus()
+
+                dialog_change_name_et_new_name.onFocusChangeListener = null
+                dialog_change_name_btn_save.setOnClickListener(null)
+                dialog_change_name_btn_cancel.setOnClickListener(null)
+            }
         }
     }
 
-    private fun showImageDialog() {
-        imageDialog.show()
+    private fun setImageDialogListeners() {
+        imageDialog?.apply {
+            setOnShowListener {
+                dialog_change_image_img_profile_picture.setOnClickListener {
+                    startActivityForResult(Intent(Intent.ACTION_PICK).setType("image/*"), 0)
+                }
 
-        imageDialog.dialog_change_image_img_profile_picture.setOnClickListener {
-            startActivityForResult(Intent(Intent.ACTION_PICK).setType("image/*"), 0)
-        }
+                dialog_change_image_btn_save.setOnClickListener {
+                    dialog_change_image_btn_save.isClickable = false
 
-        imageDialog.dialog_change_image_btn_save.setOnClickListener {
-            imageDialog.dialog_change_image_btn_save.isClickable = false
+                    // TODO: prevent multiple clicks in rapid succession
 
-            // TODO: prevent multiple clicks in rapid succession
+                    if (uri == null) {
+                        toast("Please add a photo")
 
-            if(uri == null) {
-                toast("Please add a photo")
+                        dialog_change_image_btn_save.isClickable = true
+                    } else {
+                        longToast("Updating image...")
 
-                imageDialog.dialog_change_image_btn_save.isClickable = true
-            } else {
-                longToast("Updating image...")
+                        val image = UUID.randomUUID().toString()
+                        val ref = FirebaseStorage.getInstance().getReference("images/$image")
+                        ref.putFile(uri!!)
+                            .addOnSuccessListener {
+                                Log.i(TAG, "Successfully saved new user profile image to storage: ${it.metadata?.path}")
 
-                val image = UUID.randomUUID().toString()
-                val ref = FirebaseStorage.getInstance().getReference("images/$image")
-                ref.putFile(uri!!)
-                    .addOnSuccessListener {
-                        Log.i(TAG, "Successfully saved new user profile image to storage: ${it.metadata?.path}")
+                                ref.downloadUrl.addOnSuccessListener { iUri ->
+                                    Log.i(TAG, "Image file location: $iUri")
 
-                        ref.downloadUrl.addOnSuccessListener { iUri ->
-                            Log.i(TAG, "Image file location: $iUri")
+                                    val uid = FirebaseAuth.getInstance().uid
+                                    val uRef = FirebaseDatabase.getInstance().getReference("/users/$uid")
+                                    uRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                                        override fun onDataChange(p0: DataSnapshot) {
+                                            val user = p0.getValue(User::class.java)
+                                            user?.imgUrl = iUri.toString()
+                                            uRef.setValue(user)
+                                                .addOnSuccessListener {
+                                                    Log.i(TAG, "Successfully updated database with new user profile " +
+                                                            "image")
+                                                    toast("Successfully updated profile picture")
 
-                            val uid = FirebaseAuth.getInstance().uid
-                            val uRef = FirebaseDatabase.getInstance().getReference("/users/$uid")
-                            uRef.addListenerForSingleValueEvent(object: ValueEventListener {
-                                override fun onDataChange(p0: DataSnapshot) {
-                                    val user = p0.getValue(User::class.java)
-                                    user?.imgUrl = iUri.toString()
-                                    uRef.setValue(user)
-                                        .addOnSuccessListener {
-                                            Log.i(TAG, "Successfully updated database with new user profile image")
-                                            toast("Successfully updated profile picture")
+                                                    uri = null
 
-                                            uri = null
+                                                    val color = ContextCompat.getColor(baseContext,
+                                                        R.color.colorDefault)
+                                                    val cd = ColorDrawable(color)
+                                                    dialog_change_image_img_profile_picture.setImageDrawable(cd)
 
-                                            val color = ContextCompat.getColor(baseContext, R.color.colorDefault)
-                                            val cd = ColorDrawable(color)
-                                            imageDialog.dialog_change_image_img_profile_picture.setImageDrawable(cd)
+                                                    dialog_change_image_txt_select_photo.text =
+                                                        getString(R.string.pick_image)
+                                                    dismiss()
 
-                                            imageDialog.dialog_change_image_txt_select_photo.text =
-                                                getString(R.string.pick_image)
-                                            imageDialog.dismiss()
+                                                    displayUserInfo(UPDATE_IMAGE)
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    Log.e(TAG, "Failed to update database with new user profile " +
+                                                            "image: ${e.message}")
+                                                    toast("Failed to update profile picture: {$e.message}")
 
-                                            displayUserInfo(UPDATE_IMAGE)
+                                                    dialog_change_image_btn_save.isClickable = true
+                                                }
                                         }
-                                        .addOnFailureListener { e ->
-                                            Log.e(TAG, "Failed to update database with new user profile image: " +
-                                                    "${e.message}")
-                                            toast("Failed to update profile picture: {$e.message}")
 
-                                            imageDialog.dialog_change_image_btn_save.isClickable = true
-                                        }
+                                        override fun onCancelled(p0: DatabaseError) {}
+                                    })
                                 }
+                            }
+                            .addOnFailureListener {
+                                Log.e(TAG, "Failed to update user profile image: ${it.message}")
+                                toast("Failed to update profile picture: ${it.message}")
 
-                                override fun onCancelled(p0: DatabaseError) {}
-                            })
-                        }
+                                dialog_change_image_btn_save.isClickable = true
+                            }
                     }
-                    .addOnFailureListener {
-                        Log.e(TAG, "Failed to update user profile image: ${it.message}")
-                        toast("Failed to update profile picture: ${it.message}")
+                }
 
-                        imageDialog.dialog_change_image_btn_save.isClickable = true
-                    }
+                dialog_change_image_btn_cancel.setOnClickListener {
+                    uri = null
+
+                    val color = ContextCompat.getColor(baseContext, R.color.colorDefault)
+                    val cd = ColorDrawable(color)
+                    dialog_change_image_img_profile_picture.setImageDrawable(cd)
+
+                    dialog_change_image_txt_select_photo.text = getString(R.string.pick_image)
+                    dismiss()
+                }
             }
-        }
 
-        imageDialog.dialog_change_image_btn_cancel.setOnClickListener {
-            uri = null
+            setOnCancelListener {
+                dialog_change_image_img_profile_picture.setOnClickListener(null)
+                dialog_change_image_btn_save.setOnClickListener(null)
+                dialog_change_image_btn_cancel.setOnClickListener(null)
+            }
 
-            val color = ContextCompat.getColor(baseContext, R.color.colorDefault)
-            val cd = ColorDrawable(color)
-            imageDialog.dialog_change_image_img_profile_picture.setImageDrawable(cd)
-
-            imageDialog.dialog_change_image_txt_select_photo.text = getString(R.string.pick_image)
-            imageDialog.dismiss()
+            setOnDismissListener {
+                dialog_change_image_img_profile_picture.setOnClickListener(null)
+                dialog_change_image_btn_save.setOnClickListener(null)
+                dialog_change_image_btn_cancel.setOnClickListener(null)
+            }
         }
     }
 }

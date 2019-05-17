@@ -12,5 +12,4 @@ interface SingleTapGestureListener : GestureDetector.OnGestureListener, GestureD
     override fun onDoubleTap(e: MotionEvent?): Boolean = true
     override fun onDoubleTapEvent(e: MotionEvent?): Boolean = true
     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean = true
-
 }
