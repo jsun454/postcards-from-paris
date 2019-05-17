@@ -116,15 +116,12 @@ class OptionsActivity : AppCompatActivity() {
         nameDialog?.apply {
             setOnShowListener {
                 dialog_change_name_et_new_name.setOnFocusChangeListener { view, b ->
-                    Log.d(TAG, "et is focused?: $b")
+                    // TODO: make keyboard show consistently when name dialog opens
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     if(b) {
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
                     } else {
-                        // TODO: fix: keyboard opens when: open dialog > hide keyboard with phone back key, click outside edittext in dialog
-                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
                         imm.hideSoftInputFromWindow(view.applicationWindowToken, 0)
-                        // window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
                     }
                 }
 
