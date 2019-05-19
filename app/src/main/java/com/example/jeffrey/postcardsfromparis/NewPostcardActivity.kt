@@ -11,9 +11,14 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.util.Log
+import com.example.jeffrey.postcardsfromparis.model.Postcard
 import com.example.jeffrey.postcardsfromparis.model.User
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -24,6 +29,10 @@ import kotlinx.android.synthetic.main.activity_new_postcard.*
 import java.util.*
 
 class NewPostcardActivity : AppCompatActivity() {
+
+    companion object {
+        private val TAG = NewPostcardActivity::class.java.simpleName
+    }
 
     private var uri: Uri? = null
 
@@ -48,6 +57,8 @@ class NewPostcardActivity : AppCompatActivity() {
         }
 
         activity_new_postcard_btn_send.setOnClickListener {
+            activity_new_postcard_btn_send.isClickable = false
+
             sendMessage()
         }
     }
@@ -119,6 +130,7 @@ class NewPostcardActivity : AppCompatActivity() {
 
     private fun sendMessage() {
         val message = activity_new_postcard_et_postcard_message.text.toString()
+
         if(message.isEmpty()) {
             toast("Message cannot be empty")
             return
@@ -130,5 +142,32 @@ class NewPostcardActivity : AppCompatActivity() {
         }
 
         // TODO: save postcard if all fields are valid
+        val uid = FirebaseAuth.getInstance().uid
+        val uRef = FirebaseDatabase.getInstance().getReference("users/$uid")
+        uRef.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                val user = p0.getValue(User::class.java) ?: return
+                val cardPath = UUID.randomUUID().toString()
+                val ref = FirebaseDatabase.getInstance().getReference("postcards/$uid/$cardPath")
+
+                val location = activity_new_postcard_txt_location.text.toString()
+                val postcard = Postcard(uri.toString(), user, location, message)
+                ref.setValue(postcard)
+                    .addOnSuccessListener {
+                        Log.i(TAG, "Successfully uploaded postcard to database")
+                        toast("Postcard sent!")
+
+                        startActivity<MailboxActivity>(CLEAR_TASK or NEW_TASK)
+                    }
+                    .addOnFailureListener {
+                        Log.e(TAG, "Failed to upload postcard to database")
+                        toast("Error: ${it.message}")
+
+                        activity_new_postcard_btn_send.isClickable = true
+                    }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {}
+        })
     }
 }
