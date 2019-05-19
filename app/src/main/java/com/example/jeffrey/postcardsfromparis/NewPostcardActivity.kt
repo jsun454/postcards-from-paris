@@ -72,7 +72,7 @@ class NewPostcardActivity : AppCompatActivity() {
 
                 if(user?.imgUrl!!.isNotEmpty()) {
                     val imgUri = Uri.parse(user.imgUrl)
-                    loadImage(imgUri, activity_new_postcard_img_postcard_picture)
+                    loadImage(imgUri, activity_new_postcard_img_profile_picture)
                 }
             }
 
