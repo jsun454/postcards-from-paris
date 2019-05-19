@@ -78,7 +78,7 @@ class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
                     }
                     .addOnFailureListener { e ->
                         Log.e(TAG, "Failed to save user to database: ${e.message}")
-                        toast("Error: {$e.message}")
+                        toast("Error: ${e.message}")
                     }
             }
             .addOnFailureListener {

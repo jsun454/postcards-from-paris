@@ -103,7 +103,7 @@ class NewUserImageActivity : AppCompatActivity() {
                                     .addOnFailureListener { e ->
                                         Log.e(TAG, "Failed to update database with new user profile image: " +
                                                 "${e.message}")
-                                        toast("Error: {$e.message}")
+                                        toast("Error: ${e.message}")
 
                                         activity_new_user_image_btn_use_photo.isClickable = true
                                         activity_new_user_image_txt_skip.isClickable = true
