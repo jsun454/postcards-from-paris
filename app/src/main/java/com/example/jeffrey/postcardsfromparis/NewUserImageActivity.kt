@@ -88,7 +88,7 @@ class NewUserImageActivity : AppCompatActivity() {
                         Log.i(TAG, "Image file location: $dUrl")
 
                         val uid = FirebaseAuth.getInstance().uid
-                        val uRef = FirebaseDatabase.getInstance().getReference("/users/$uid")
+                        val uRef = FirebaseDatabase.getInstance().getReference("users/$uid")
                         uRef.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(p0: DataSnapshot) {
                                 val user = p0.getValue(User::class.java)

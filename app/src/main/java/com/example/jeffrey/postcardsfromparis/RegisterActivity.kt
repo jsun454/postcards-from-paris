@@ -69,7 +69,7 @@ class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
                 longToast("Creating user...")
 
                 val user = User(it.user.uid, name, "")
-                val ref = FirebaseDatabase.getInstance().getReference("/users/${it.user.uid}")
+                val ref = FirebaseDatabase.getInstance().getReference("users/${it.user.uid}")
                 ref.setValue(user)
                     .addOnSuccessListener {
                         Log.i(TAG, "Successfully saved user to database")

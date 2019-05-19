@@ -88,7 +88,7 @@ class OptionsActivity : AppCompatActivity() {
 
     private fun displayUserInfo(mode: Int = 0) {
         val uid = FirebaseAuth.getInstance().uid
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        val ref = FirebaseDatabase.getInstance().getReference("users/$uid")
         ref.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 val user = p0.getValue(User::class.java)
@@ -128,7 +128,7 @@ class OptionsActivity : AppCompatActivity() {
                         toast("Please enter a valid name")
                     } else {
                         val uid = FirebaseAuth.getInstance().uid
-                        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+                        val ref = FirebaseDatabase.getInstance().getReference("users/$uid")
                         ref.addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(p0: DataSnapshot) {
                                 val user = p0.getValue(User::class.java)
@@ -209,7 +209,7 @@ class OptionsActivity : AppCompatActivity() {
                                     Log.i(TAG, "Image file location: $iUri")
 
                                     val uid = FirebaseAuth.getInstance().uid
-                                    val uRef = FirebaseDatabase.getInstance().getReference("/users/$uid")
+                                    val uRef = FirebaseDatabase.getInstance().getReference("users/$uid")
                                     uRef.addListenerForSingleValueEvent(object : ValueEventListener {
                                         override fun onDataChange(p0: DataSnapshot) {
                                             val user = p0.getValue(User::class.java)
