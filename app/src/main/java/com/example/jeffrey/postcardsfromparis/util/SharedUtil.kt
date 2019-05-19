@@ -8,6 +8,7 @@ object SharedUtil {
 
     const val CLEAR_TASK = Intent.FLAG_ACTIVITY_CLEAR_TASK
     const val NEW_TASK = Intent.FLAG_ACTIVITY_NEW_TASK
+    const val NO_ANIMATION = Intent.FLAG_ACTIVITY_NO_ANIMATION
 
     inline fun <reified T: Any> Context.startActivity(flags: Int) {
         val intent = Intent(this, T::class.java)

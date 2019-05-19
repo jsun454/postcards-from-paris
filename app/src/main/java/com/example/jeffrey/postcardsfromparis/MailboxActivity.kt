@@ -7,6 +7,7 @@ import android.view.MenuItem
 import com.example.jeffrey.postcardsfromparis.adapter.MailboxPagerAdapter
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NO_ANIMATION
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_mailbox.*
@@ -18,7 +19,7 @@ class MailboxActivity : AppCompatActivity() {
         setContentView(R.layout.activity_mailbox)
 
         if(FirebaseAuth.getInstance().uid == null) {
-            startActivity<AuthUserActivity>(CLEAR_TASK or NEW_TASK)
+            startActivity<AuthUserActivity>(CLEAR_TASK or NEW_TASK or NO_ANIMATION)
         }
 
         val fragmentAdapter = MailboxPagerAdapter(supportFragmentManager)
