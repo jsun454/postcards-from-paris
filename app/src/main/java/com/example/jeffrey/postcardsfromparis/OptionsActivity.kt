@@ -80,14 +80,11 @@ class OptionsActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(requestCode == 0 && resultCode == RESULT_OK && data != null) {
-            imageDialog.apply {
-                uri = data.data
-                uri?.let {
-                    loadImage(it, dialog_change_image_img_profile_picture)
-                }
-
-                dialog_change_image_txt_select_photo?.text = getString(R.string.change_image)
+            uri = data.data
+            uri?.let {
+                loadImage(it, imageDialog!!.dialog_change_image_img_profile_picture)
             }
+            imageDialog!!.dialog_change_image_txt_select_photo.text = getString(R.string.change_image)
         }
     }
 
