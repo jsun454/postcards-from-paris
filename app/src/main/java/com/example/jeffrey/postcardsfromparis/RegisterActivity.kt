@@ -93,7 +93,7 @@ class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
         activity_register_et_password.clearFocus()
 
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(window.decorView.rootView.windowToken, 0)
+        imm.hideSoftInputFromWindow(window.decorView.rootView.applicationWindowToken, 0)
 
         return true
     }

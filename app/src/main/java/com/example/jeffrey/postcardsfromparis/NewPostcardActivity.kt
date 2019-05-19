@@ -38,7 +38,7 @@ class NewPostcardActivity : AppCompatActivity() {
         activity_new_postcard_et_postcard_message.setOnFocusChangeListener { view, b ->
             if(!b) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                imm.hideSoftInputFromWindow(view.applicationWindowToken, 0)
             }
         }
 
