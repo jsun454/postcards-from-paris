@@ -12,6 +12,7 @@ import android.util.Log
 import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.createDialog
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.longToast
@@ -24,7 +25,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_options.*
 import kotlinx.android.synthetic.main.dialog_change_image.*
 import kotlinx.android.synthetic.main.dialog_change_name.*
@@ -54,8 +54,7 @@ class OptionsActivity : AppCompatActivity() {
 
         activity_options_btn_change_name.setOnClickListener {
             if(nameDialog == null) {
-                val view = layoutInflater.inflate(R.layout.dialog_change_name, null)
-                nameDialog = AlertDialog.Builder(this).setView(view).create()
+                nameDialog = createDialog(R.layout.dialog_change_name, this)
                 setNameDialogListeners()
             }
             nameDialog?.show()
@@ -63,8 +62,7 @@ class OptionsActivity : AppCompatActivity() {
 
         activity_options_btn_change_picture.setOnClickListener {
             if(imageDialog == null) {
-                val view = layoutInflater.inflate(R.layout.dialog_change_image, null)
-                imageDialog = AlertDialog.Builder(this).setView(view).create()
+                imageDialog = createDialog(R.layout.dialog_change_image, this)
                 setImageDialogListeners()
             }
             imageDialog?.show()
@@ -102,7 +100,7 @@ class OptionsActivity : AppCompatActivity() {
                 if(mode != UPDATE_NAME) {
                     if(user?.imgUrl!!.isNotEmpty()) {
                         val imgUri = Uri.parse(user.imgUrl)
-                        Picasso.get().load(imgUri).centerCrop().fit().into(activity_options_img_profile_picture)
+                        loadImage(imgUri, activity_options_img_profile_picture)
                     }
                 }
             }

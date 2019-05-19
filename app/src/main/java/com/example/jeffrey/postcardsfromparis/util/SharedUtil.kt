@@ -1,5 +1,7 @@
 package com.example.jeffrey.postcardsfromparis.util
 
+import android.app.Activity
+import android.support.v7.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -14,6 +16,11 @@ object SharedUtil {
     const val CLEAR_TASK = Intent.FLAG_ACTIVITY_CLEAR_TASK
     const val NEW_TASK = Intent.FLAG_ACTIVITY_NEW_TASK
     const val NO_ANIMATION = Intent.FLAG_ACTIVITY_NO_ANIMATION
+
+    fun Activity.createDialog(resource: Int, context: Context): AlertDialog {
+        val view = layoutInflater.inflate(resource, null)
+        return AlertDialog.Builder(context).setView(view).create()
+    }
 
     inline fun <reified T: Any> Context.startActivity(flags: Int) {
         val intent = Intent(this, T::class.java)
