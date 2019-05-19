@@ -133,11 +133,13 @@ class NewPostcardActivity : AppCompatActivity() {
 
         if(message.isEmpty()) {
             toast("Message cannot be empty")
+            activity_new_postcard_btn_send.isClickable = true
             return
         }
 
         if(uri == null) {
             toast("Please add a picture")
+            activity_new_postcard_btn_send.isClickable = true
             return
         }
 
