@@ -2,6 +2,8 @@ package com.example.jeffrey.postcardsfromparis.util
 
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 
 object SharedUtil {
@@ -20,5 +22,13 @@ object SharedUtil {
 
     fun Context.longToast(message: CharSequence) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
-    // TODO: add extension functions to show/hide keyboard
+    fun View.showKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(applicationWindowToken, 0)
+    }
 }

@@ -1,13 +1,12 @@
 package com.example.jeffrey.postcardsfromparis
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.inputmethod.InputMethodManager
 import com.example.jeffrey.postcardsfromparis.model.User
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -37,8 +36,7 @@ class NewPostcardActivity : AppCompatActivity() {
 
         activity_new_postcard_et_postcard_message.setOnFocusChangeListener { view, b ->
             if(!b) {
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(view.applicationWindowToken, 0)
+                view.hideKeyboard()
             }
         }
 

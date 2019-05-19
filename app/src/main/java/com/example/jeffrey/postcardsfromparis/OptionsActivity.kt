@@ -1,7 +1,6 @@
 package com.example.jeffrey.postcardsfromparis
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -11,11 +10,12 @@ import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.view.inputmethod.InputMethodManager
 import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.longToast
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.showKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
@@ -117,11 +117,11 @@ class OptionsActivity : AppCompatActivity() {
             setOnShowListener {
                 dialog_change_name_et_new_name.setOnFocusChangeListener { view, b ->
                     // TODO: make keyboard show consistently when name dialog opens
-                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
                     if(b) {
-                        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                        view.showKeyboard()
                     } else {
-                        imm.hideSoftInputFromWindow(view.applicationWindowToken, 0)
+                        view.hideKeyboard()
                     }
                 }
 

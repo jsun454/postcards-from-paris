@@ -1,14 +1,13 @@
 package com.example.jeffrey.postcardsfromparis
 
-import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
 import android.util.Log
 import android.view.MotionEvent
-import android.view.inputmethod.InputMethodManager
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.example.jeffrey.postcardsfromparis.util.SingleTapGestureListener
@@ -35,6 +34,9 @@ class LoginActivity : AppCompatActivity(), SingleTapGestureListener {
         activity_login_sv_background.setOnTouchListener { _, event ->
             detector.onTouchEvent(event)
         }
+
+        // TODO: fix issue where edittexts don't always regaining focus on user tap after the user has unfocused them by
+        //  tapping somewhere in the background
 
         activity_login_btn_login.setOnClickListener {
             activity_login_btn_login.isClickable = false
@@ -73,8 +75,7 @@ class LoginActivity : AppCompatActivity(), SingleTapGestureListener {
         activity_login_et_email.clearFocus()
         activity_login_et_password.clearFocus()
 
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(window.decorView.rootView.applicationWindowToken, 0)
+        window.decorView.rootView.hideKeyboard()
 
         return true
     }
