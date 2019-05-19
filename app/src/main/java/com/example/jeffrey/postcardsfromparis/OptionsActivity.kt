@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
@@ -14,6 +13,7 @@ import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.longToast
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.showKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
@@ -80,12 +80,14 @@ class OptionsActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(requestCode == 0 && resultCode == RESULT_OK && data != null) {
-            uri = data.data
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+            imageDialog.apply {
+                uri = data.data
+                uri?.let {
+                    loadImage(it, dialog_change_image_img_profile_picture)
+                }
 
-            val imageDialog = imageDialog ?: return
-            imageDialog.dialog_change_image_img_profile_picture?.setImageBitmap(bitmap)
-            imageDialog.dialog_change_image_txt_select_photo?.text = getString(R.string.change_image)
+                dialog_change_image_txt_select_photo?.text = getString(R.string.change_image)
+            }
         }
     }
 

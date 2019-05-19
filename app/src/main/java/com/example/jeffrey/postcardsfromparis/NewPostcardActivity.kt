@@ -4,16 +4,15 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_new_postcard.*
 
 class NewPostcardActivity : AppCompatActivity() {
@@ -50,9 +49,10 @@ class NewPostcardActivity : AppCompatActivity() {
 
         if(requestCode == 0 && resultCode == RESULT_OK && data != null) {
             uri = data.data
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+            uri?.let {
+                loadImage(it, activity_new_postcard_img_postcard_picture)
+            }
 
-            activity_new_postcard_img_postcard_picture.setImageBitmap(bitmap)
             activity_new_postcard_txt_select_photo.text = getString(R.string.change_image)
         }
     }
@@ -72,7 +72,7 @@ class NewPostcardActivity : AppCompatActivity() {
 
                 if(user?.imgUrl!!.isNotEmpty()) {
                     val imgUri = Uri.parse(user.imgUrl)
-                    Picasso.get().load(imgUri).centerCrop().fit().into(activity_new_postcard_img_profile_picture)
+                    loadImage(imgUri, activity_new_postcard_img_postcard_picture)
                 }
             }
 
