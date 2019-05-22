@@ -18,6 +18,7 @@ import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.longToast
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.showKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivityToPickImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -35,7 +36,7 @@ class OptionsActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = OptionsActivity::class.java.simpleName
-
+        private const val PICK_IMAGE = 0
         private const val UPDATE_NAME = 1
         private const val UPDATE_IMAGE = 2
     }
@@ -77,7 +78,7 @@ class OptionsActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == 0 && resultCode == RESULT_OK && data != null) {
+        if(requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             uri = data.data
             uri?.let {
                 loadImage(it, imageDialog!!.dialog_change_image_img_profile_picture)
@@ -184,11 +185,12 @@ class OptionsActivity : AppCompatActivity() {
         imageDialog?.apply {
             setOnShowListener {
                 dialog_change_image_img_profile_picture.setOnClickListener {
-                    startActivityForResult(Intent(Intent.ACTION_PICK).setType("image/*"), 0)
+                    startActivityToPickImage(PICK_IMAGE)
                 }
 
                 dialog_change_image_btn_save.setOnClickListener {
                     dialog_change_image_btn_save.isClickable = false
+                    dialog_change_image_btn_cancel.isClickable = false
 
                     // TODO: prevent multiple clicks in rapid succession
 
@@ -196,6 +198,7 @@ class OptionsActivity : AppCompatActivity() {
                         toast("Please add a photo")
 
                         dialog_change_image_btn_save.isClickable = true
+                        dialog_change_image_btn_cancel.isClickable = true
                     } else {
                         longToast("Updating image...")
 
@@ -239,6 +242,7 @@ class OptionsActivity : AppCompatActivity() {
                                                     toast("Failed to update profile picture: {$e.message}")
 
                                                     dialog_change_image_btn_save.isClickable = true
+                                                    dialog_change_image_btn_cancel.isClickable = true
                                                 }
                                         }
 
@@ -251,6 +255,7 @@ class OptionsActivity : AppCompatActivity() {
                                 toast("Failed to update profile picture: ${it.message}")
 
                                 dialog_change_image_btn_save.isClickable = true
+                                dialog_change_image_btn_cancel.isClickable = true
                             }
                     }
                 }

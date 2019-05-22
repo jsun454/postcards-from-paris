@@ -11,6 +11,7 @@ import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.longToast
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivityToPickImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -25,6 +26,7 @@ class NewUserImageActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = NewUserImageActivity::class.java.simpleName
+        private const val PICK_IMAGE = 0
     }
 
     private var uri: Uri? = null
@@ -36,7 +38,7 @@ class NewUserImageActivity : AppCompatActivity() {
         supportActionBar?.title = "Add a photo"
 
         activity_new_user_image_img_profile_picture.setOnClickListener {
-            startActivityForResult(Intent(Intent.ACTION_PICK).setType("image/*"), 0)
+            startActivityToPickImage(PICK_IMAGE)
         }
 
         activity_new_user_image_btn_use_photo.setOnClickListener {
@@ -59,7 +61,7 @@ class NewUserImageActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == 0 && resultCode == RESULT_OK && data != null) {
+        if(requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             uri = data.data
             uri?.let {
                 loadImage(it, activity_new_user_image_img_profile_picture)

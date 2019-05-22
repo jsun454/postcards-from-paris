@@ -22,6 +22,17 @@ object SharedUtil {
         return AlertDialog.Builder(context).setView(view).create()
     }
 
+    fun Activity.startActivityToPickImage(requestCode: Int) {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, requestCode)
+    }
+
+    inline fun <reified T: Any> Activity.startActivityForResult(requestCode: Int) {
+        val intent = Intent(this, T::class.java)
+        startActivityForResult(intent, requestCode)
+    }
+
     inline fun <reified T: Any> Context.startActivity(flags: Int) {
         val intent = Intent(this, T::class.java)
         intent.flags = flags
