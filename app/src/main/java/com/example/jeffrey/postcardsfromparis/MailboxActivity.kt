@@ -1,5 +1,6 @@
 package com.example.jeffrey.postcardsfromparis
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -9,10 +10,16 @@ import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NO_ANIMATION
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivityForResult
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_mailbox.*
 
 class MailboxActivity : AppCompatActivity() {
+
+    companion object {
+        private const val NEW_POSTCARD = 0
+        private const val SENT_TAB_POS = 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +34,7 @@ class MailboxActivity : AppCompatActivity() {
         activity_mailbox_tab_mail_mode.setupWithViewPager(activity_mailbox_vp_mail_list)
 
         activity_mailbox_fab_new_postcard.setOnClickListener {
-            startActivity<NewPostcardActivity>(NEW_TASK)
+            startActivityForResult<NewPostcardActivity>(NEW_POSTCARD)
         }
     }
 
@@ -42,5 +49,16 @@ class MailboxActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == NEW_POSTCARD && resultCode == RESULT_OK && data != null) {
+            if(data.getBooleanExtra(NewPostcardActivity.RETURN_TO_SENT_TAB, false)) {
+                val sentTab = activity_mailbox_tab_mail_mode.getTabAt(SENT_TAB_POS)
+                sentTab?.select()
+            }
+        }
     }
 }

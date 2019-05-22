@@ -1,7 +1,6 @@
 package com.example.jeffrey.postcardsfromparis
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -14,11 +13,9 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.example.jeffrey.postcardsfromparis.model.Postcard
 import com.example.jeffrey.postcardsfromparis.model.User
-import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
-import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
-import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivityToPickImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -32,6 +29,9 @@ class NewPostcardActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = NewPostcardActivity::class.java.simpleName
+        private const val PICK_IMAGE = 0
+        private const val REQUEST_LOCATION = 1
+        const val RETURN_TO_SENT_TAB = "sent"
     }
 
     private var uri: Uri? = null
@@ -47,7 +47,7 @@ class NewPostcardActivity : AppCompatActivity() {
         activity_new_postcard_img_postcard_picture.setOnClickListener {
             activity_new_postcard_et_postcard_message.clearFocus()
 
-            startActivityForResult(Intent(Intent.ACTION_PICK).setType("image/*"), 0)
+            startActivityToPickImage(PICK_IMAGE)
         }
 
         activity_new_postcard_et_postcard_message.setOnFocusChangeListener { view, b ->
@@ -66,7 +66,7 @@ class NewPostcardActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == 0 && resultCode == RESULT_OK && data != null) {
+        if(requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             uri = data.data
             uri?.let {
                 loadImage(it, activity_new_postcard_img_postcard_picture)
@@ -79,7 +79,7 @@ class NewPostcardActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if(requestCode == 0) {
+        if(requestCode == REQUEST_LOCATION) {
             activity_new_postcard_txt_location.text = getLocation()
         }
     }
@@ -93,12 +93,13 @@ class NewPostcardActivity : AppCompatActivity() {
 
                 activity_new_postcard_txt_name.text = user?.name
 
-                if(ContextCompat.checkSelfPermission(this@NewPostcardActivity,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                val locationAccess = ContextCompat.checkSelfPermission(this@NewPostcardActivity,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                if(locationAccess == PackageManager.PERMISSION_GRANTED) {
                     activity_new_postcard_txt_location.text = getLocation()
                 } else {
-                    ActivityCompat.requestPermissions(this@NewPostcardActivity,
-                        arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), 0)
+                    val permissions = arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION)
+                    ActivityCompat.requestPermissions(this@NewPostcardActivity, permissions, REQUEST_LOCATION)
                 }
 
                 if(user?.imgUrl!!.isNotEmpty()) {
@@ -112,9 +113,9 @@ class NewPostcardActivity : AppCompatActivity() {
     }
 
     private fun getLocation(): String {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED) {
-            val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationAccess = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if(locationAccess == PackageManager.PERMISSION_GRANTED) {
+            val lm = getSystemService(LOCATION_SERVICE) as LocationManager
             val here = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
             val gcd = Geocoder(this, Locale.getDefault())
             val addresses = gcd.getFromLocation(here.latitude, here.longitude, 1)
@@ -143,7 +144,6 @@ class NewPostcardActivity : AppCompatActivity() {
             return
         }
 
-        // TODO: save postcard if all fields are valid
         val uid = FirebaseAuth.getInstance().uid
         val uRef = FirebaseDatabase.getInstance().getReference("users/$uid")
         uRef.addListenerForSingleValueEvent(object: ValueEventListener {
@@ -159,7 +159,10 @@ class NewPostcardActivity : AppCompatActivity() {
                         Log.i(TAG, "Successfully uploaded postcard to database")
                         toast("Postcard sent!")
 
-                        startActivity<MailboxActivity>(CLEAR_TASK or NEW_TASK)
+                        val intent = Intent()
+                        intent.putExtra(RETURN_TO_SENT_TAB, true)
+                        setResult(RESULT_OK, intent)
+                        finish()
                     }
                     .addOnFailureListener {
                         Log.e(TAG, "Failed to upload postcard to database")
