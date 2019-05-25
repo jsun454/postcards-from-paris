@@ -15,6 +15,7 @@ import com.example.jeffrey.postcardsfromparis.model.Postcard
 import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.longToast
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivityToPickImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
@@ -22,6 +23,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_new_postcard.*
 import java.util.*
 
@@ -58,6 +60,7 @@ class NewPostcardActivity : AppCompatActivity() {
 
         activity_new_postcard_btn_send.setOnClickListener {
             activity_new_postcard_btn_send.isClickable = false
+            activity_new_postcard_et_postcard_message.isFocusable = false
 
             sendMessage()
         }
@@ -135,44 +138,67 @@ class NewPostcardActivity : AppCompatActivity() {
         if(message.isEmpty()) {
             toast("Message cannot be empty")
             activity_new_postcard_btn_send.isClickable = true
+            activity_new_postcard_et_postcard_message.isFocusable = true
             return
         }
 
         if(uri == null) {
             toast("Please add a picture")
             activity_new_postcard_btn_send.isClickable = true
+            activity_new_postcard_et_postcard_message.isFocusable = true
             return
         }
 
-        val uid = FirebaseAuth.getInstance().uid
-        val uRef = FirebaseDatabase.getInstance().getReference("users/$uid")
-        uRef.addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                val user = p0.getValue(User::class.java) ?: return
-                val cardPath = UUID.randomUUID().toString()
-                val ref = FirebaseDatabase.getInstance().getReference("postcards/$uid/$cardPath")
+        longToast("Sending...")
 
-                val location = activity_new_postcard_txt_location.text.toString()
-                val postcard = Postcard(uri.toString(), user, location, message)
-                ref.setValue(postcard)
-                    .addOnSuccessListener {
-                        Log.i(TAG, "Successfully uploaded postcard to database")
-                        toast("Postcard sent!")
+        val image = UUID.randomUUID().toString()
+        val iRef = FirebaseStorage.getInstance().getReference("images/$image")
+        iRef.putFile(uri!!)
+            .addOnSuccessListener {
+                Log.i(TAG, "Successfully saved postcard image to storage: ${it.metadata?.path}")
 
-                        val intent = Intent()
-                        intent.putExtra(RETURN_TO_SENT_TAB, true)
-                        setResult(RESULT_OK, intent)
-                        finish()
-                    }
-                    .addOnFailureListener {
-                        Log.e(TAG, "Failed to upload postcard to database")
-                        toast("Error: ${it.message}")
+                iRef.downloadUrl.addOnSuccessListener { dUrl ->
+                    Log.i(TAG, "Image file location: $dUrl")
 
-                        activity_new_postcard_btn_send.isClickable = true
-                    }
+                    val uid = FirebaseAuth.getInstance().uid
+                    val uRef = FirebaseDatabase.getInstance().getReference("users/$uid")
+                    uRef.addListenerForSingleValueEvent(object: ValueEventListener {
+                        override fun onDataChange(p0: DataSnapshot) {
+                            val user = p0.getValue(User::class.java) ?: return
+                            val cardPath = UUID.randomUUID().toString()
+                            val ref = FirebaseDatabase.getInstance().getReference("postcards/$uid/$cardPath")
+
+                            val location = activity_new_postcard_txt_location.text.toString()
+                            val postcard = Postcard(dUrl.toString(), user, location, message)
+                            ref.setValue(postcard)
+                                .addOnSuccessListener {
+                                    Log.i(TAG, "Successfully uploaded postcard to database")
+                                    toast("Postcard sent!")
+
+                                    val intent = Intent()
+                                    intent.putExtra(RETURN_TO_SENT_TAB, true)
+                                    setResult(RESULT_OK, intent)
+                                    finish()
+                                }
+                                .addOnFailureListener {
+                                    Log.e(TAG, "Failed to upload postcard to database")
+                                    toast("Error: ${it.message}")
+
+                                    activity_new_postcard_btn_send.isClickable = true
+                                    activity_new_postcard_et_postcard_message.isFocusable = true
+                                }
+                        }
+
+                        override fun onCancelled(p0: DatabaseError) {}
+                    })
+                }
             }
+            .addOnFailureListener {
+                Log.e(TAG, "Failed to save postcard image to storage: ${it.message}")
+                toast("Failed to send postcard: ${it.message}")
 
-            override fun onCancelled(p0: DatabaseError) {}
-        })
+                activity_new_postcard_btn_send.isClickable = true
+                activity_new_postcard_et_postcard_message.isFocusable = true
+            }
     }
 }
