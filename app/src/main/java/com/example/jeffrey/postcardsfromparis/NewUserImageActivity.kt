@@ -77,52 +77,52 @@ class NewUserImageActivity : AppCompatActivity() {
 
             activity_new_user_image_btn_use_photo.isClickable = true
             activity_new_user_image_txt_skip.isClickable = true
-        } else {
-            longToast("Saving image...")
-
-            val image = UUID.randomUUID().toString()
-            val ref = FirebaseStorage.getInstance().getReference("images/$image")
-            ref.putFile(uri!!)
-                .addOnSuccessListener {
-                    Log.i(TAG, "Successfully saved user profile image to storage: ${it.metadata?.path}")
-
-                    ref.downloadUrl.addOnSuccessListener { dUrl ->
-                        Log.i(TAG, "Image file location: $dUrl")
-
-                        val uid = FirebaseAuth.getInstance().uid
-                        val uRef = FirebaseDatabase.getInstance().getReference("users/$uid")
-                        uRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(p0: DataSnapshot) {
-                                val user = p0.getValue(User::class.java)
-                                user?.imgUrl = dUrl.toString()
-                                uRef.setValue(user)
-                                    .addOnSuccessListener {
-                                        Log.i(TAG, "Successfully updated database with new user profile image")
-                                        toast("Successfully saved image")
-
-                                        startActivity<MailboxActivity>(CLEAR_TASK or NEW_TASK)
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Log.e(TAG, "Failed to update database with new user profile image: " +
-                                                "${e.message}")
-                                        toast("Error: ${e.message}")
-
-                                        activity_new_user_image_btn_use_photo.isClickable = true
-                                        activity_new_user_image_txt_skip.isClickable = true
-                                    }
-                            }
-
-                            override fun onCancelled(p0: DatabaseError) {}
-                        })
-                    }
-                }
-                .addOnFailureListener {
-                    Log.e(TAG, "Failed to save user profile image to storage: ${it.message}")
-                    toast("Failed to save image: ${it.message}")
-
-                    activity_new_user_image_btn_use_photo.isClickable = true
-                    activity_new_user_image_txt_skip.isClickable = true
-                }
         }
+
+        longToast("Saving image...")
+
+        val image = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("images/$image")
+        ref.putFile(uri!!)
+            .addOnSuccessListener {
+                Log.i(TAG, "Successfully saved user profile image to storage: ${it.metadata?.path}")
+
+                ref.downloadUrl.addOnSuccessListener { dUrl ->
+                    Log.i(TAG, "Image file location: $dUrl")
+
+                    val uid = FirebaseAuth.getInstance().uid
+                    val uRef = FirebaseDatabase.getInstance().getReference("users/$uid")
+                    uRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(p0: DataSnapshot) {
+                            val user = p0.getValue(User::class.java)
+                            user?.imgUrl = dUrl.toString()
+                            uRef.setValue(user)
+                                .addOnSuccessListener {
+                                    Log.i(TAG, "Successfully updated database with new user profile image")
+                                    toast("Successfully saved image")
+
+                                    startActivity<MailboxActivity>(CLEAR_TASK or NEW_TASK)
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e(TAG, "Failed to update database with new user profile image: " +
+                                            "${e.message}")
+                                    toast("Error: ${e.message}")
+
+                                    activity_new_user_image_btn_use_photo.isClickable = true
+                                    activity_new_user_image_txt_skip.isClickable = true
+                                }
+                        }
+
+                        override fun onCancelled(p0: DatabaseError) {}
+                    })
+                }
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Failed to save user profile image to storage: ${it.message}")
+                toast("Failed to save image: ${it.message}")
+
+                activity_new_user_image_btn_use_photo.isClickable = true
+                activity_new_user_image_txt_skip.isClickable = true
+            }
     }
 }
