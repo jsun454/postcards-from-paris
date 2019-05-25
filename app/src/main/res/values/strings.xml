@@ -13,4 +13,6 @@
 
     <string name="change_image">Change Photo</string>
     <string name="pick_image">Select Photo</string>
+
+    <string name="postcard_picture">Postcard Picture</string>
 </resources>
