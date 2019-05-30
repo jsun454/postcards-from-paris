@@ -121,6 +121,24 @@ class NewPostcardActivity : AppCompatActivity() {
 
             override fun onCancelled(p0: DatabaseError) {}
         })
+
+        ref.addValueEventListener(object: ValueEventListener {
+            var changes = 0
+
+            override fun onDataChange(p0: DataSnapshot) {
+                val user = p0.getValue(User::class.java)
+                if(user?.imgUrl?.isNotEmpty() == true) {
+                    val imgUri = Uri.parse(user.imgUrl)
+                    loadImage(imgUri, activity_new_postcard_img_profile_picture)
+                }
+
+                if(++changes == 2) {
+                    ref.removeEventListener(this)
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {}
+        })
     }
 
     private fun getLocation(): String {
