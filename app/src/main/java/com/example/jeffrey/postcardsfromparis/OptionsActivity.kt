@@ -278,12 +278,28 @@ class OptionsActivity : AppCompatActivity() {
             }
 
             setOnCancelListener {
+                uri = null
+
+                val color = ContextCompat.getColor(baseContext, R.color.colorDefault)
+                val cd = ColorDrawable(color)
+                dialog_change_image_img_profile_picture.setImageDrawable(cd)
+
+                dialog_change_image_txt_select_photo.text = getString(R.string.pick_image)
+
                 dialog_change_image_img_profile_picture.setOnClickListener(null)
                 dialog_change_image_btn_save.setOnClickListener(null)
                 dialog_change_image_btn_cancel.setOnClickListener(null)
             }
 
             setOnDismissListener {
+                uri = null
+
+                val color = ContextCompat.getColor(baseContext, R.color.colorDefault)
+                val cd = ColorDrawable(color)
+                dialog_change_image_img_profile_picture.setImageDrawable(cd)
+
+                dialog_change_image_txt_select_photo.text = getString(R.string.pick_image)
+
                 dialog_change_image_img_profile_picture.setOnClickListener(null)
                 dialog_change_image_btn_save.setOnClickListener(null)
                 dialog_change_image_btn_cancel.setOnClickListener(null)
