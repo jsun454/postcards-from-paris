@@ -13,9 +13,13 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import com.example.jeffrey.postcardsfromparis.model.Postcard
 import com.example.jeffrey.postcardsfromparis.model.User
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NO_ANIMATION
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.longToast
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivity
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.startActivityToPickImage
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.toast
 import com.google.firebase.auth.FirebaseAuth
@@ -41,6 +45,10 @@ class NewPostcardActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_postcard)
+
+        if(FirebaseAuth.getInstance().uid == null) {
+            startActivity<AuthUserActivity>(CLEAR_TASK or NEW_TASK or NO_ANIMATION)
+        }
 
         supportActionBar?.title = "New Postcard"
 
@@ -105,7 +113,7 @@ class NewPostcardActivity : AppCompatActivity() {
                     ActivityCompat.requestPermissions(this@NewPostcardActivity, permissions, REQUEST_LOCATION)
                 }
 
-                if(user?.imgUrl!!.isNotEmpty()) {
+                if(user?.imgUrl?.isNotEmpty() == true) {
                     val imgUri = Uri.parse(user.imgUrl)
                     loadImage(imgUri, activity_new_postcard_img_profile_picture)
                 }
@@ -169,7 +177,8 @@ class NewPostcardActivity : AppCompatActivity() {
                             val ref = FirebaseDatabase.getInstance().getReference("postcards/$uid/$cardPath")
 
                             val location = activity_new_postcard_txt_location.text.toString()
-                            val postcard = Postcard(dUrl.toString(), user, location, message)
+                            val time = System.currentTimeMillis()
+                            val postcard = Postcard(dUrl.toString(), user, location, message, time)
                             ref.setValue(postcard)
                                 .addOnSuccessListener {
                                     Log.i(TAG, "Successfully uploaded postcard to database")
@@ -180,9 +189,9 @@ class NewPostcardActivity : AppCompatActivity() {
                                     setResult(RESULT_OK, intent)
                                     finish()
                                 }
-                                .addOnFailureListener {
+                                .addOnFailureListener { e ->
                                     Log.e(TAG, "Failed to upload postcard to database")
-                                    toast("Error: ${it.message}")
+                                    toast("Error: ${e.message}")
 
                                     activity_new_postcard_btn_send.isClickable = true
                                     activity_new_postcard_et_postcard_message.isFocusable = true

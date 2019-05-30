@@ -36,7 +36,7 @@ class SentMailFragment : Fragment() {
 
     private fun listenForPostcards() {
         val uid = FirebaseAuth.getInstance().uid
-        val ref = FirebaseDatabase.getInstance().getReference("postcards/$uid")
+        val ref = FirebaseDatabase.getInstance().getReference("postcards/$uid").orderByChild("time")
         ref.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val postcard = p0.getValue(Postcard::class.java) ?: return

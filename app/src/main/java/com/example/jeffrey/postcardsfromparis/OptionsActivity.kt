@@ -12,6 +12,7 @@ import android.util.Log
 import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
+import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NO_ANIMATION
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.createDialog
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.hideKeyboard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
@@ -48,6 +49,10 @@ class OptionsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_options)
+
+        if(FirebaseAuth.getInstance().uid == null) {
+            startActivity<AuthUserActivity>(CLEAR_TASK or NEW_TASK or NO_ANIMATION)
+        }
 
         supportActionBar?.title = "User Options"
 
@@ -99,7 +104,7 @@ class OptionsActivity : AppCompatActivity() {
                 }
 
                 if(mode != UPDATE_NAME) {
-                    if(user?.imgUrl!!.isNotEmpty()) {
+                    if(user?.imgUrl?.isNotEmpty() == true) {
                         val imgUri = Uri.parse(user.imgUrl)
                         loadImage(imgUri, activity_options_img_profile_picture)
                     }
