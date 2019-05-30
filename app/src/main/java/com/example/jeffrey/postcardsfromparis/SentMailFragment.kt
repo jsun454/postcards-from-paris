@@ -2,6 +2,7 @@ package com.example.jeffrey.postcardsfromparis
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.SimpleItemAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ class SentMailFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         fragment_sent_mail_rv_mail_list.adapter = adapter
+        (fragment_sent_mail_rv_mail_list.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         listenForPostcards()
 
