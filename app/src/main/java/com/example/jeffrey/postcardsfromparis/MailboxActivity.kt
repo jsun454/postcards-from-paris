@@ -36,6 +36,9 @@ class MailboxActivity : AppCompatActivity() {
         activity_mailbox_fab_new_postcard.setOnClickListener {
             startActivityForResult<NewPostcardActivity>(NEW_POSTCARD)
         }
+
+        // TODO: if user is new (check for no received messages, or maybe pass in bool extra newUser=true to activity),
+        //  send an automatic welcome message from "The PFP Team" or something as a one-time thing
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
