@@ -77,6 +77,8 @@ class NewUserImageActivity : AppCompatActivity() {
 
             activity_new_user_image_btn_use_photo.isClickable = true
             activity_new_user_image_txt_skip.isClickable = true
+
+            return
         }
 
         longToast("Saving image...")
