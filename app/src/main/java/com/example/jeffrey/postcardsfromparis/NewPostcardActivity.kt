@@ -191,16 +191,41 @@ class NewPostcardActivity : AppCompatActivity() {
                     uRef.addListenerForSingleValueEvent(object: ValueEventListener {
                         override fun onDataChange(p0: DataSnapshot) {
                             val user = p0.getValue(User::class.java) ?: return
-                            val cardPath = UUID.randomUUID().toString()
-                            val ref = FirebaseDatabase.getInstance().getReference("postcards/$uid/$cardPath")
-
                             val location = activity_new_postcard_txt_location.text.toString()
                             val time = System.currentTimeMillis()
+
+                            user.lastSent = time
+                            uRef.setValue(user)
+
                             val postcard = Postcard(dUrl.toString(), user, location, message, time)
+
+                            val cardPath = UUID.randomUUID().toString()
+                            val ref = FirebaseDatabase.getInstance().getReference("postcards/$uid/$cardPath")
                             ref.setValue(postcard)
                                 .addOnSuccessListener {
                                     Log.i(TAG, "Successfully uploaded postcard to database")
                                     toast("Postcard sent!")
+
+                                    // TODO: send postcard to all new users, and to a certain fraction of active users
+                                    //  who haven't received postcards in the longest amount of time (lastreceived)
+                                    // TODO: obtain fraction by comparing # postcards sent in past week? to the number
+                                    //  of active users (active = has sent a postcard in the past month?)
+                                    // TODO: fraction should attempt to make each user receive an average of 1 postcard
+                                    //  in 2 days? or something like that
+                                    // TODO: when user receives postcard, update user object's lastreceived on firebase
+
+                                    // TODO: some pseudocode
+//                                    user1.send(postcard)
+//                                    user1.lastsent = now
+//
+//                                    newUserList = list(user for user in firebase if user.lastreceived == 0)
+//                                    for(user in newUserList) { user.lastreceived = now }
+//                                    TARPUPW = targetAvgReceivedPerUserPerWeek = 5
+//                                    TATCRPW = targetAvgTotalCardsReceivedPerWeek = TARPUPW * numActiveUsers(pastmonth)
+//                                    numOtherRecipients = ceil(TATCRPW / avgTotalCardsSentPerWeek)
+//                                    send(postcard).to(user for user in newUserList)
+//                                    recipientArr[numOtherRecipients] = {firebaseUserRef.orderBy(lastreceived).topN()}
+//                                    send(postcard).to(user for user in recipientArr)
 
                                     val intent = Intent()
                                     intent.putExtra(RETURN_TO_SENT_TAB, true)
