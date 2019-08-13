@@ -214,9 +214,7 @@ class NewPostcardActivity : AppCompatActivity() {
                                     //  in 2 days? or something like that
                                     // TODO: when user receives postcard, update user object's lastreceived on firebase
 
-                                    // TODO: some pseudocode
 //                                    user1.send(postcard)
-//                                    user1.lastsent = now
 //
 //                                    newUserList = list(user for user in firebase if user.lastreceived == 0)
 //                                    for(user in newUserList) { user.lastreceived = now }

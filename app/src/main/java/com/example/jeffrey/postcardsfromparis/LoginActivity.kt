@@ -35,9 +35,6 @@ class LoginActivity : AppCompatActivity(), SingleTapGestureListener {
             detector.onTouchEvent(event)
         }
 
-        // TODO: fix issue where edittexts don't always regaining focus on user tap after the user has unfocused them by
-        //  tapping somewhere in the background
-
         activity_login_btn_login.setOnClickListener {
             activity_login_btn_login.isClickable = false
 

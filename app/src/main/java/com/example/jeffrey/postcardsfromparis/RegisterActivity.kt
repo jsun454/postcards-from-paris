@@ -38,13 +38,8 @@ class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
             detector.onTouchEvent(event)
         }
 
-        // TODO: fix issue where edittexts don't always regaining focus on user tap after the user has unfocused them by
-        //  tapping somewhere in the background
-
         activity_register_btn_register.setOnClickListener {
             activity_register_btn_register.isClickable = false
-
-            // TODO: prevent multiple clicks in rapid succession
 
             registerUser()
         }

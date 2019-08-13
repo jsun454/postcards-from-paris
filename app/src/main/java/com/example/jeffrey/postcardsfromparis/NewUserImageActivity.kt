@@ -45,8 +45,6 @@ class NewUserImageActivity : AppCompatActivity() {
             activity_new_user_image_btn_use_photo.isClickable = false
             activity_new_user_image_txt_skip.isClickable = false
 
-            // TODO: prevent multiple clicks in rapid succession
-
             saveImage()
         }
 

@@ -119,8 +119,6 @@ class OptionsActivity : AppCompatActivity() {
         nameDialog?.apply {
             setOnShowListener {
                 dialog_change_name_et_new_name.setOnFocusChangeListener { view, b ->
-                    // TODO: make keyboard show consistently when name dialog opens
-
                     if(b) {
                         view.showKeyboard()
                     } else {
@@ -196,8 +194,6 @@ class OptionsActivity : AppCompatActivity() {
                 dialog_change_image_btn_save.setOnClickListener {
                     dialog_change_image_btn_save.isClickable = false
                     dialog_change_image_btn_cancel.isClickable = false
-
-                    // TODO: prevent multiple clicks in rapid succession
 
                     if (uri == null) {
                         toast("Please add a photo")
