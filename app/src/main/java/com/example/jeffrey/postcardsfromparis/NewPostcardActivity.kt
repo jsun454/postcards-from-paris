@@ -194,7 +194,6 @@ class NewPostcardActivity : AppCompatActivity() {
                             val location = activity_new_postcard_txt_location.text.toString()
                             val time = System.currentTimeMillis()
 
-                            user.lastSent = time
                             uRef.setValue(user)
 
                             val postcard = Postcard(dUrl.toString(), user, location, message, time)

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
 import android.util.Log
 import android.view.MotionEvent
+import com.example.jeffrey.postcardsfromparis.model.MailDelivery.createWelcomeMessage
 import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
@@ -63,11 +64,12 @@ class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
                 Log.i(TAG, "Successfully created user with ID: ${it.user.uid}")
                 longToast("Creating user...")
 
-                val time = System.currentTimeMillis()
-                val user = User(it.user.uid, name, "", time, 0L)
+                val user = User(it.user.uid, name, "", 0L)
                 val ref = FirebaseDatabase.getInstance().getReference("users/${it.user.uid}")
                 ref.setValue(user)
                     .addOnSuccessListener {
+                        createWelcomeMessage(user)
+
                         Log.i(TAG, "Successfully saved user to database")
 
                         startActivity<NewUserImageActivity>(CLEAR_TASK or NEW_TASK)
