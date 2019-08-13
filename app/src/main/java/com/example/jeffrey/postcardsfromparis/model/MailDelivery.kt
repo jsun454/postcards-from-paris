@@ -7,9 +7,10 @@ import java.util.*
 
 object MailDelivery {
 
-    private const val WELCOME_IMAGE = "pfp.jpg"
-    private const val PFP_PROFILE_PICTURE = "20190104_022430.jpg" // TODO: update these < ^ for final location names
+    private const val WELCOME_IMAGE = "welcome.jpg"
+    private const val PFP_PROFILE_PICTURE = "20190104_022430.jpg" // TODO: update this for final location name
     private const val PFP_LOCATION = "Santa Barbara"
+
     private val TAG = MailDelivery::class.java.simpleName
 
     fun createWelcomeMessage(user: User, fbc: FirebaseCallback) {
