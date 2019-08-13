@@ -44,6 +44,13 @@ object MailDelivery {
         }
     }
 
+    fun distributePostcard(postcard: Postcard, fbc: FirebaseCallback) {
+        // TODO: send postcard to each user who hasn't received a postcard in X amount of time (6 hours)
+        // TODO: update lastreceived on each user
+        // TODO: call fbc.onCallback() at the end of each success/failure listener
+        // TODO: this won't work on a large scale but use for now
+    }
+
     interface FirebaseCallback {
         fun onCallback()
     }
