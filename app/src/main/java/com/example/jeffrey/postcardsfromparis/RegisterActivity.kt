@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.view.GestureDetectorCompat
 import android.util.Log
 import android.view.MotionEvent
+import com.example.jeffrey.postcardsfromparis.model.MailDelivery
 import com.example.jeffrey.postcardsfromparis.model.MailDelivery.createWelcomeMessage
 import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
@@ -68,11 +69,13 @@ class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
                 val ref = FirebaseDatabase.getInstance().getReference("users/${it.user.uid}")
                 ref.setValue(user)
                     .addOnSuccessListener {
-                        createWelcomeMessage(user)
-
                         Log.i(TAG, "Successfully saved user to database")
 
-                        startActivity<NewUserImageActivity>(CLEAR_TASK or NEW_TASK)
+                        createWelcomeMessage(user, object: MailDelivery.FirebaseCallback {
+                            override fun onCallback() {
+                                startActivity<NewUserImageActivity>(CLEAR_TASK or NEW_TASK)
+                            }
+                        })
                     }
                     .addOnFailureListener { e ->
                         Log.e(TAG, "Failed to save user to database: ${e.message}")
