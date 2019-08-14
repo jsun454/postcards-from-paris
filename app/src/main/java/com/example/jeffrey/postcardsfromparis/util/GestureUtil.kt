@@ -3,6 +3,9 @@ package com.example.jeffrey.postcardsfromparis.util
 import android.view.GestureDetector
 import android.view.MotionEvent
 
+/**
+ * This interface can be used to handle single tap gesture events without the other boilerplate functions
+ */
 interface SingleTapGestureListener : GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
 
     override fun onShowPress(e: MotionEvent?) {}
