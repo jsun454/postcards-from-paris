@@ -33,21 +33,32 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_new_postcard.*
 import java.util.*
 
+/**
+ * This activity lets the user create a new postcard and send it to other users
+ */
 class NewPostcardActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = NewPostcardActivity::class.java.simpleName
+
+        // Request codes
         private const val PICK_IMAGE = 0
         private const val REQUEST_LOCATION = 1
+
         const val RETURN_TO_SENT_TAB = "sent"
     }
 
+    // Used to store the URI of the postcard picture selected by the user
     private var uri: Uri? = null
 
+    /**
+     * Display the user's information and set click listeners
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_postcard)
 
+        // If there is no user logged in
         if(FirebaseAuth.getInstance().uid == null) {
             startActivity<AuthUserActivity>(CLEAR_TASK or NEW_TASK or NO_ANIMATION)
         }
@@ -56,18 +67,21 @@ class NewPostcardActivity : AppCompatActivity() {
 
         displayUserInfo()
 
+        // For the user to choose a postcard picture
         activity_new_postcard_img_postcard_picture.setOnClickListener {
             activity_new_postcard_et_postcard_message.clearFocus()
 
             startActivityToPickImage(PICK_IMAGE)
         }
 
+        // Handles background taps
         activity_new_postcard_et_postcard_message.setOnFocusChangeListener { view, b ->
             if(!b) {
                 view.hideKeyboard()
             }
         }
 
+        // Send button
         activity_new_postcard_btn_send.setOnClickListener {
             activity_new_postcard_btn_send.isClickable = false
             activity_new_postcard_et_postcard_message.isFocusable = false
@@ -77,9 +91,17 @@ class NewPostcardActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Handles the results received from the user selecting a postcard picture
+     *
+     * @param requestCode the code used to identify the request
+     * @param resultCode the result of the request
+     * @param data the intent which contains [data] related to the request
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        // If the user selected a picture
         if(requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             uri = data.data
             uri?.let {
@@ -90,6 +112,13 @@ class NewPostcardActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Handles the results of requesting the user's location
+     *
+     * @param requestCode the code used to identify the request
+     * @param permissions unused parameter in this implementation
+     * @param grantResults unused parameter in this implementation
+     */
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -98,6 +127,9 @@ class NewPostcardActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Displays the user's information on the postcard template
+     */
     private fun displayUserInfo() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
@@ -107,6 +139,7 @@ class NewPostcardActivity : AppCompatActivity() {
 
                 activity_new_postcard_txt_name.text = user?.name
 
+                // Display location if permission has been granted, request location otherwise
                 val locationAccess = ContextCompat.checkSelfPermission(this@NewPostcardActivity,
                     Manifest.permission.ACCESS_COARSE_LOCATION)
                 if(locationAccess == PackageManager.PERMISSION_GRANTED) {
@@ -125,7 +158,10 @@ class NewPostcardActivity : AppCompatActivity() {
             override fun onCancelled(p0: DatabaseError) {}
         })
 
+        // Handles the case where the user updated his/her profile picture immediately before coming to this
+        // activity, and the picture just finished updating
         ref.addValueEventListener(object: ValueEventListener {
+            // Used to detect if the user's profile picture has updated.
             var changes = 0
 
             override fun onDataChange(p0: DataSnapshot) {
@@ -135,6 +171,7 @@ class NewPostcardActivity : AppCompatActivity() {
                     loadImage(imgUri, activity_new_postcard_img_profile_picture)
                 }
 
+                // Once the new picture is being displayed, remove this listener
                 if(++changes == 2) {
                     ref.removeEventListener(this)
                 }
@@ -144,6 +181,11 @@ class NewPostcardActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Tries to obtain the user's location
+     *
+     * @return the user's location (city) if location permissions have been granted
+     */
     private fun getLocation(): String {
         val locationAccess = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
         if(locationAccess == PackageManager.PERMISSION_GRANTED) {
@@ -161,6 +203,9 @@ class NewPostcardActivity : AppCompatActivity() {
         return "Unknown"
     }
 
+    /**
+     * Attempts to send the user's postcard, displays an explanation message if the message cannot be sent
+     */
     private fun sendMessage() {
         val message = activity_new_postcard_et_postcard_message.text.toString()
 
@@ -186,6 +231,7 @@ class NewPostcardActivity : AppCompatActivity() {
 
         longToast("Sending...")
 
+        // Store the postcard picture
         val image = UUID.randomUUID().toString()
         val iRef = FirebaseStorage.getInstance().getReference("images/$image")
         iRef.putFile(uri!!)
@@ -205,14 +251,17 @@ class NewPostcardActivity : AppCompatActivity() {
 
                             uRef.setValue(user)
 
+                            // Creates the postcard object
                             val postcard = Postcard(dUrl.toString(), user, location, message, time)
 
+                            // Saves the postcard to Firebase
                             val cardPath = UUID.randomUUID().toString()
                             val ref = FirebaseDatabase.getInstance().getReference("postcards/$uid/$cardPath")
                             ref.setValue(postcard)
                                 .addOnSuccessListener {
                                     Log.i(TAG, "Successfully uploaded postcard to database")
 
+                                    // Sends the postcard to other users
                                     distributePostcard(postcard, object: MailDelivery.FirebaseCallback {
                                         override fun onCallback(success: Boolean) {
                                             if(success) {

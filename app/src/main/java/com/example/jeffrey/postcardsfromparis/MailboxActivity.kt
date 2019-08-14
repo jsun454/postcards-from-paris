@@ -20,7 +20,9 @@ import kotlinx.android.synthetic.main.activity_mailbox.*
 class MailboxActivity : AppCompatActivity() {
 
     companion object {
+        // Request code
         private const val NEW_POSTCARD = 0
+
         private const val SENT_TAB_POS = 1
     }
 
@@ -70,6 +72,10 @@ class MailboxActivity : AppCompatActivity() {
 
     /**
      * Handles the results received from the user creating a new postcard
+     *
+     * @param requestCode the code used to identify the request
+     * @param resultCode the result of the request
+     * @param data the intent which contains information about the result
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

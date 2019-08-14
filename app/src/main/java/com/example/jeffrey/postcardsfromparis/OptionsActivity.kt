@@ -32,24 +32,37 @@ import kotlinx.android.synthetic.main.dialog_change_image.*
 import kotlinx.android.synthetic.main.dialog_change_name.*
 import java.util.*
 
+/**
+ * This activity handles the options menu
+ */
 @SuppressLint("InflateParams")
 class OptionsActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = OptionsActivity::class.java.simpleName
+
+        // Request code
         private const val PICK_IMAGE = 0
+
         private const val UPDATE_NAME = 1
         private const val UPDATE_IMAGE = 2
     }
 
+    // Used to store the URI of the postcard picture selected by the user
     private var uri: Uri? = null
+
+    // Dialogs for changing user's name/picture
     private var nameDialog: AlertDialog? = null
     private var imageDialog: AlertDialog? = null
 
+    /**
+     * Display the user's current information and set click listeners
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_options)
 
+        // If there is no user logged in
         if(FirebaseAuth.getInstance().uid == null) {
             startActivity<AuthUserActivity>(CLEAR_TASK or NEW_TASK or NO_ANIMATION)
         }
@@ -58,6 +71,7 @@ class OptionsActivity : AppCompatActivity() {
 
         displayUserInfo()
 
+        // Open name change dialog
         activity_options_btn_change_name.setOnClickListener {
             if(nameDialog == null) {
                 nameDialog = createDialog(R.layout.dialog_change_name, this)
@@ -66,6 +80,7 @@ class OptionsActivity : AppCompatActivity() {
             nameDialog?.show()
         }
 
+        // Open profile picture change dialog
         activity_options_btn_change_picture.setOnClickListener {
             if(imageDialog == null) {
                 imageDialog = createDialog(R.layout.dialog_change_image, this)
@@ -74,15 +89,24 @@ class OptionsActivity : AppCompatActivity() {
             imageDialog?.show()
         }
 
+        // Log out button
         activity_options_btn_log_out.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             startActivity<AuthUserActivity>(CLEAR_TASK or NEW_TASK)
         }
     }
 
+    /**
+     * Handles the results received from the user selecting a profile picture
+     *
+     * @param requestCode the code used to identify the request
+     * @param resultCode the result of the request
+     * @param data the intent which contains [data] related to the request
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        // If the user selected a picture
         if(requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
             uri = data.data
             uri?.let {
@@ -92,6 +116,11 @@ class OptionsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Updates the user's information being displayed based on what the user just changed
+     *
+     * @param mode indicates what information needs to be updated
+     */
     private fun displayUserInfo(mode: Int = 0) {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("users/$uid")
@@ -99,10 +128,12 @@ class OptionsActivity : AppCompatActivity() {
             override fun onDataChange(p0: DataSnapshot) {
                 val user = p0.getValue(User::class.java)
 
+                // Update user's picture (if the mode is neither [UPDATE_IMAGE] nor [UPDATE_NAME], then update both)
                 if(mode != UPDATE_IMAGE) {
                     activity_options_txt_name.text = user?.name
                 }
 
+                // Update user's name
                 if(mode != UPDATE_NAME) {
                     if(user?.imgUrl?.isNotEmpty() == true) {
                         val imgUri = Uri.parse(user.imgUrl)
@@ -115,9 +146,14 @@ class OptionsActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Set click listeners for the buttons in the name change dialog
+     */
     private fun setNameDialogListeners() {
         nameDialog?.apply {
+            // When the dialog appears
             setOnShowListener {
+                // Handles soft keyboard
                 dialog_change_name_et_new_name.setOnFocusChangeListener { view, b ->
                     if(b) {
                         view.showKeyboard()
@@ -126,6 +162,7 @@ class OptionsActivity : AppCompatActivity() {
                     }
                 }
 
+                // Save button
                 dialog_change_name_btn_save.setOnClickListener {
                     val newName = dialog_change_name_et_new_name.text.toString()
                     if(newName.isEmpty()) {
@@ -135,6 +172,7 @@ class OptionsActivity : AppCompatActivity() {
                         val ref = FirebaseDatabase.getInstance().getReference("users/$uid")
                         ref.addListenerForSingleValueEvent(object: ValueEventListener {
                             override fun onDataChange(p0: DataSnapshot) {
+                                // Update the user's name on Firebase
                                 val user = p0.getValue(User::class.java)
                                 user?.name = newName
                                 ref.setValue(user)
@@ -157,6 +195,7 @@ class OptionsActivity : AppCompatActivity() {
                     }
                 }
 
+                // Cancel button
                 dialog_change_name_btn_cancel.setOnClickListener {
                     dismiss()
                 }
@@ -164,6 +203,7 @@ class OptionsActivity : AppCompatActivity() {
                 dialog_change_name_et_new_name.requestFocus()
             }
 
+            // When dialog is cancelled
             setOnCancelListener {
                 dialog_change_name_et_new_name.text.clear()
                 dialog_change_name_et_new_name.clearFocus()
@@ -173,6 +213,7 @@ class OptionsActivity : AppCompatActivity() {
                 dialog_change_name_btn_cancel.setOnClickListener(null)
             }
 
+            // When dialog is dismissed
             setOnDismissListener {
                 dialog_change_name_et_new_name.text.clear()
                 dialog_change_name_et_new_name.clearFocus()
@@ -184,13 +225,19 @@ class OptionsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Set click listeners for the buttons in the profile picture change dialog
+     */
     private fun setImageDialogListeners() {
         imageDialog?.apply {
+            // When the dialog appears
             setOnShowListener {
+                // For the user to choose a profile picture
                 dialog_change_image_img_profile_picture.setOnClickListener {
                     startActivityToPickImage(PICK_IMAGE)
                 }
 
+                // Save button
                 dialog_change_image_btn_save.setOnClickListener {
                     dialog_change_image_btn_save.isClickable = false
                     dialog_change_image_btn_cancel.isClickable = false
@@ -203,6 +250,7 @@ class OptionsActivity : AppCompatActivity() {
                     } else {
                         longToast("Updating image...")
 
+                        // Store the profile picture
                         val image = UUID.randomUUID().toString()
                         val ref = FirebaseStorage.getInstance().getReference("images/$image")
                         ref.putFile(uri!!)
@@ -216,6 +264,7 @@ class OptionsActivity : AppCompatActivity() {
                                     val uRef = FirebaseDatabase.getInstance().getReference("users/$uid")
                                     uRef.addListenerForSingleValueEvent(object : ValueEventListener {
                                         override fun onDataChange(p0: DataSnapshot) {
+                                            // Update the user's image on Firebase
                                             val user = p0.getValue(User::class.java)
                                             user?.imgUrl = iUri.toString()
                                             uRef.setValue(user)
@@ -224,6 +273,7 @@ class OptionsActivity : AppCompatActivity() {
                                                             "image")
                                                     toast("Successfully updated profile picture")
 
+                                                    // Reset the dialog to its original state
                                                     uri = null
 
                                                     val color = ContextCompat.getColor(baseContext,
@@ -261,7 +311,9 @@ class OptionsActivity : AppCompatActivity() {
                     }
                 }
 
+                // Cancel button
                 dialog_change_image_btn_cancel.setOnClickListener {
+                    // Reset the dialog to its original state
                     uri = null
 
                     val color = ContextCompat.getColor(baseContext, R.color.colorDefault)
@@ -273,6 +325,7 @@ class OptionsActivity : AppCompatActivity() {
                 }
             }
 
+            // When dialog is cancelled
             setOnCancelListener {
                 uri = null
 
@@ -287,6 +340,7 @@ class OptionsActivity : AppCompatActivity() {
                 dialog_change_image_btn_cancel.setOnClickListener(null)
             }
 
+            // When dialog is dismissed
             setOnDismissListener {
                 uri = null
 

@@ -100,7 +100,7 @@ class LoginActivity : AppCompatActivity(), SingleTapGestureListener {
      * Consumes the motion event if either input field has focus
      *
      * @param e unused parameter in this implementation
-     * @returns whether the motion event was consumed
+     * @return whether the motion event was consumed
      */
     override fun onDown(e: MotionEvent?): Boolean {
         return activity_login_et_email.hasFocus() || activity_login_et_password.hasFocus()
