@@ -54,16 +54,23 @@ object MailDelivery {
             .limitToFirst(MAX_RECIPIENTS)
         ref.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                if(success) {
+                    return
+                }
+
                 if(done) {
+                    ref.removeEventListener(this)
+
                     return
                 }
 
                 ++numRecipients
 
-                val user = p0.getValue(User::class.java) ?: return
-                val uid = user.uid
-                if(uid == postcard.author.uid) {
+                val user = p0.getValue(User::class.java)
+                val uid = user?.uid
+                if(uid == null || uid == postcard.author.uid) {
                     --numRecipients
+
                     return
                 }
 
