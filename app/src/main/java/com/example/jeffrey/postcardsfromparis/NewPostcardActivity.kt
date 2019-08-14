@@ -71,6 +71,7 @@ class NewPostcardActivity : AppCompatActivity() {
         activity_new_postcard_btn_send.setOnClickListener {
             activity_new_postcard_btn_send.isClickable = false
             activity_new_postcard_et_postcard_message.isFocusable = false
+            activity_new_postcard_img_postcard_picture.isClickable = false
 
             sendMessage()
         }
@@ -167,6 +168,7 @@ class NewPostcardActivity : AppCompatActivity() {
             toast("Message cannot be empty")
             activity_new_postcard_btn_send.isClickable = true
             activity_new_postcard_et_postcard_message.isFocusable = true
+            activity_new_postcard_img_postcard_picture.isClickable = true
             return
         }
 
@@ -174,6 +176,7 @@ class NewPostcardActivity : AppCompatActivity() {
             toast("Please add a picture")
             activity_new_postcard_btn_send.isClickable = true
             activity_new_postcard_et_postcard_message.isFocusable = true
+            activity_new_postcard_img_postcard_picture.isClickable = true
             return
         }
 
@@ -207,13 +210,20 @@ class NewPostcardActivity : AppCompatActivity() {
                                     Log.i(TAG, "Successfully uploaded postcard to database")
 
                                     distributePostcard(postcard, object: MailDelivery.FirebaseCallback {
-                                        override fun onCallback() {
-                                            toast("Postcard sent!")
+                                        override fun onCallback(success: Boolean) {
+                                            if(success) {
+                                                toast("Postcard sent!")
+                                            } else {
+                                                toast("Unable to send postcard. Please try again later.")
+                                            }
 
                                             val intent = Intent()
                                             intent.putExtra(RETURN_TO_SENT_TAB, true)
                                             setResult(RESULT_OK, intent)
-                                            finish()                                        }
+                                            finish()
+                                        }
+
+                                        override fun onCallback() {}
                                     })
                                 }
                                 .addOnFailureListener { e ->
@@ -222,6 +232,7 @@ class NewPostcardActivity : AppCompatActivity() {
 
                                     activity_new_postcard_btn_send.isClickable = true
                                     activity_new_postcard_et_postcard_message.isFocusable = true
+                                    activity_new_postcard_img_postcard_picture.isClickable = true
                                 }
                         }
 
@@ -235,6 +246,7 @@ class NewPostcardActivity : AppCompatActivity() {
 
                 activity_new_postcard_btn_send.isClickable = true
                 activity_new_postcard_et_postcard_message.isFocusable = true
+                activity_new_postcard_img_postcard_picture.isClickable = true
             }
     }
 }
