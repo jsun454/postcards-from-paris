@@ -166,17 +166,21 @@ class NewPostcardActivity : AppCompatActivity() {
 
         if(message.isEmpty()) {
             toast("Message cannot be empty")
+
             activity_new_postcard_btn_send.isClickable = true
             activity_new_postcard_et_postcard_message.isFocusable = true
             activity_new_postcard_img_postcard_picture.isClickable = true
+
             return
         }
 
         if(uri == null) {
             toast("Please add a picture")
+
             activity_new_postcard_btn_send.isClickable = true
             activity_new_postcard_et_postcard_message.isFocusable = true
             activity_new_postcard_img_postcard_picture.isClickable = true
+
             return
         }
 

@@ -43,7 +43,10 @@ class ReceivedMailFragment : Fragment() {
         ref.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val postcard = p0.getValue(Postcard::class.java) ?: return
-                if(postcard.author.uid == uid) return
+                if(postcard.author.uid == uid) {
+                    return
+                }
+
                 val postcardItem = PostcardItem(postcard, true)
                 adapter.add(0, postcardItem)
                 fragment_sent_mail_rv_mail_list?.smoothScrollToPosition(0)
