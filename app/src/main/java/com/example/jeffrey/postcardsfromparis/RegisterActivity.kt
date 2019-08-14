@@ -75,6 +75,8 @@ class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
                             override fun onCallback() {
                                 startActivity<NewUserImageActivity>(CLEAR_TASK or NEW_TASK)
                             }
+
+                            override fun onCallback(success: Boolean) {}
                         })
                     }
                     .addOnFailureListener { e ->
