@@ -54,7 +54,9 @@ object MailDelivery {
             .limitToFirst(MAX_RECIPIENTS)
         ref.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                if(done) return
+                if(done) {
+                    return
+                }
 
                 ++numRecipients
 
@@ -69,23 +71,43 @@ object MailDelivery {
                 val cardRef = FirebaseDatabase.getInstance().getReference("postcards/$uid/$cardPath")
                 cardRef.setValue(postcard)
                     .addOnSuccessListener {
-                        Log.i(TAG, "Successfully delivered postcard to user")
+                        user.lastReceived = System.currentTimeMillis()
 
-                        --numRecipients
-                        success = true
+                        val uRef = FirebaseDatabase.getInstance().getReference("users/$uid")
+                        uRef.setValue(user)
+                            .addOnSuccessListener {
+                                Log.i(TAG, "Successfully delivered postcard to user")
 
-                        if(numRecipients == 0) {
-                            fbc.onCallback(success)
-                            ref.removeEventListener(this)
-                        }
+                                --numRecipients
+                                success = true
+
+                                if(numRecipients == 0) {
+                                    fbc.onCallback(success)
+
+                                    ref.removeEventListener(this)
+                                }
+                            }
+                            .addOnFailureListener {
+                                Log.e(TAG, "Failed to deliver postcard to user: ${it.message}")
+
+                                --numRecipients
+
+                                if(numRecipients == 0) {
+                                    fbc.onCallback(success)
+
+                                    ref.removeEventListener(this)
+                                }
+                            }
                     }
                     .addOnFailureListener {
-                        Log.e(TAG, "Failed to deliver postcard to user")
+                        Log.e(TAG, "Failed to deliver postcard to user: ${it.message}")
 
                         --numRecipients
 
                         if(numRecipients == 0) {
                             fbc.onCallback(success)
+
+                            ref.removeEventListener(this)
                         }
                     }
             }
@@ -100,6 +122,7 @@ object MailDelivery {
             override fun onDataChange(p0: DataSnapshot) {
                 if(numRecipients == 0) {
                     done = true
+
                     fbc.onCallback(success)
                 }
             }
