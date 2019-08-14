@@ -28,8 +28,10 @@ class PostcardItem(private val postcard: Postcard, var showFront: Boolean = true
                 partial_postcard_back_txt_name.text = postcard.author.name
                 partial_postcard_back_txt_location.text = postcard.location
 
-                val profileUri = Uri.parse(postcard.author.imgUrl)
-                loadImage(profileUri, partial_postcard_back_img_profile_picture)
+                if(postcard.author.imgUrl.isNotEmpty()) {
+                    val profileUri = Uri.parse(postcard.author.imgUrl)
+                    loadImage(profileUri, partial_postcard_back_img_profile_picture)
+                }
 
                 partial_postcard_back_txt_postcard_message.text = postcard.message
             }
