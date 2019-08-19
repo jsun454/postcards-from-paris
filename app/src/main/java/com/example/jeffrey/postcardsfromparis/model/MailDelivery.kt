@@ -14,9 +14,10 @@ object MailDelivery {
 
     // Constants for creating the welcome postcard that is sent to every new user
     private const val WELCOME_IMAGE = "welcome.jpg"
-    private const val PFP_PROFILE_PICTURE = "20190104_022430.jpg" // TODO: update this for final location name
+    private const val PFP_PROFILE_PICTURE = "stamp.jpg"
     private const val PFP_NAME = "Postcards From Paris Team"
-    private const val WELCOME_MESSAGE = "Welcome to Postcards From Paris!" // TODO: placeholder
+    private const val WELCOME_MESSAGE = "Welcome to Postcards From Paris! Here, you can view postcards sent in from " +
+            "users all around the world. Tap the pencil in the bottom right corner to send your first postcard."
     private const val PFP_LOCATION = "Santa Barbara"
 
     // How many users a regular postcard can be sent to
@@ -30,10 +31,10 @@ object MailDelivery {
      */
     fun createWelcomeMessage(user: User, cb: FirebaseCallback) {
         // Gets a reference to the postcard picture
-        val frontRef = FirebaseStorage.getInstance().getReference("images/$WELCOME_IMAGE")
+        val frontRef = FirebaseStorage.getInstance().getReference("pfp/$WELCOME_IMAGE")
         frontRef.downloadUrl.addOnSuccessListener { fUrl ->
             // Gets a reference to the stamp picture
-            val backRef = FirebaseStorage.getInstance().getReference("images/$PFP_PROFILE_PICTURE")
+            val backRef = FirebaseStorage.getInstance().getReference("pfp/$PFP_PROFILE_PICTURE")
             backRef.downloadUrl.addOnSuccessListener { bUrl ->
                 // Create the welcome postcard
                 val pfp = User("", PFP_NAME, bUrl.toString(), -1)
