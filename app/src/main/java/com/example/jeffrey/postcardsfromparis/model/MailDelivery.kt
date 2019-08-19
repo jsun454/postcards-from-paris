@@ -57,9 +57,13 @@ object MailDelivery {
                         cb.onCallback()
                     }
             }.addOnFailureListener {
+                Log.e(TAG, "Failed to retrieve welcome postcard stamp: ${it.message}")
+
                 cb.onCallback()
             }
         }.addOnFailureListener {
+            Log.e(TAG, "Failed to retrieve welcome postcard image: ${it.message}")
+
             cb.onCallback()
         }
     }
