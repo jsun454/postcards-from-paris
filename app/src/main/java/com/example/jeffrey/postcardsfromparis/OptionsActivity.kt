@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
+import com.example.jeffrey.postcardsfromparis.RegisterActivity.Companion.MAX_NAME_LENGTH
 import com.example.jeffrey.postcardsfromparis.model.User
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.CLEAR_TASK
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.NEW_TASK
@@ -165,33 +166,37 @@ class OptionsActivity : AppCompatActivity() {
                 // Save button
                 dialog_change_name_btn_save.setOnClickListener {
                     val newName = dialog_change_name_et_new_name.text.toString()
-                    if(newName.isEmpty()) {
-                        toast("Please enter a valid name")
-                    } else {
-                        val uid = FirebaseAuth.getInstance().uid
-                        val ref = FirebaseDatabase.getInstance().getReference("users/$uid")
-                        ref.addListenerForSingleValueEvent(object: ValueEventListener {
-                            override fun onDataChange(p0: DataSnapshot) {
-                                // Update the user's name on Firebase
-                                val user = p0.getValue(User::class.java)
-                                user?.name = newName
-                                ref.setValue(user)
-                                    .addOnSuccessListener {
-                                        Log.i(TAG, "Successfully updated user name: ${user?.name}")
-                                        toast("Name successfully updated")
+                    when {
+                        newName.isEmpty() -> toast("Please enter a valid name")
+                        newName.length > MAX_NAME_LENGTH -> toast("Name cannot be longer than " +
+                                "$MAX_NAME_LENGTH characters")
+                        else -> {
+                            val uid = FirebaseAuth.getInstance().uid
+                            val ref = FirebaseDatabase.getInstance().getReference("users/$uid")
+                            ref.addListenerForSingleValueEvent(object: ValueEventListener {
+                                override fun onDataChange(p0: DataSnapshot) {
+                                    // Update the user's name on Firebase
+                                    val user = p0.getValue(User::class.java)
+                                    user?.name = newName
+                                    ref.setValue(user)
+                                        .addOnSuccessListener {
+                                            Log.i(TAG, "Successfully updated user name: " +
+                                                    "${user?.name}")
+                                            toast("Name successfully updated")
 
-                                        dismiss()
+                                            dismiss()
 
-                                        displayUserInfo(UPDATE_NAME)
-                                    }
-                                    .addOnFailureListener {
-                                        Log.e(TAG, "Failed to update user name: ${it.message}")
-                                        toast("Error: ${it.message}")
-                                    }
-                            }
+                                            displayUserInfo(UPDATE_NAME)
+                                        }
+                                        .addOnFailureListener {
+                                            Log.e(TAG, "Failed to update user name: ${it.message}")
+                                            toast("Error: ${it.message}")
+                                        }
+                                }
 
-                            override fun onCancelled(p0: DatabaseError) {}
-                        })
+                                override fun onCancelled(p0: DatabaseError) {}
+                            })
+                        }
                     }
                 }
 

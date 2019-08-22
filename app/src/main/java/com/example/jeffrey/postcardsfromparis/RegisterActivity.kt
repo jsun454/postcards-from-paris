@@ -26,6 +26,9 @@ class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
 
     companion object {
         private val TAG = RegisterActivity::class.java.simpleName
+
+        // Character limit for user's name
+        const val MAX_NAME_LENGTH = 16
     }
 
     private lateinit var detector: GestureDetectorCompat
@@ -66,6 +69,15 @@ class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
         // If fields are left blank
         if(name.isEmpty() || email.isEmpty() || password.isEmpty()) {
             toast("Please enter name/email/password")
+
+            activity_register_btn_register.isClickable = true
+
+            return
+        }
+
+        // Limit name length
+        if(name.length > MAX_NAME_LENGTH) {
+            toast("Name cannot be longer than $MAX_NAME_LENGTH characters")
 
             activity_register_btn_register.isClickable = true
 
