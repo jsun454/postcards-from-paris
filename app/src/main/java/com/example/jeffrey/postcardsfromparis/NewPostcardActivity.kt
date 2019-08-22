@@ -45,6 +45,10 @@ class NewPostcardActivity : AppCompatActivity() {
         private const val PICK_IMAGE = 0
         private const val REQUEST_LOCATION = 1
 
+        // Character limit for postcard message
+        private const val MAX_MESSAGE_LENGTH = 300
+
+        // Extra to pass back to MailboxActivity
         const val RETURN_TO_SENT_TAB = "sent"
     }
 
@@ -211,6 +215,16 @@ class NewPostcardActivity : AppCompatActivity() {
 
         if(message.isEmpty()) {
             toast("Message cannot be empty")
+
+            activity_new_postcard_btn_send.isClickable = true
+            activity_new_postcard_et_postcard_message.isFocusable = true
+            activity_new_postcard_img_postcard_picture.isClickable = true
+
+            return
+        }
+
+        if(message.length > MAX_MESSAGE_LENGTH) {
+            toast("Message cannot be longer than $MAX_MESSAGE_LENGTH characters")
 
             activity_new_postcard_btn_send.isClickable = true
             activity_new_postcard_et_postcard_message.isFocusable = true
