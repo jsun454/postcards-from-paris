@@ -218,6 +218,8 @@ class NewPostcardActivity : AppCompatActivity() {
 
             activity_new_postcard_btn_send.isClickable = true
             activity_new_postcard_et_postcard_message.isFocusable = true
+            activity_new_postcard_et_postcard_message.isFocusableInTouchMode = true
+            activity_new_postcard_et_postcard_message.isClickable = true
             activity_new_postcard_img_postcard_picture.isClickable = true
 
             return
@@ -228,6 +230,8 @@ class NewPostcardActivity : AppCompatActivity() {
 
             activity_new_postcard_btn_send.isClickable = true
             activity_new_postcard_et_postcard_message.isFocusable = true
+            activity_new_postcard_et_postcard_message.isFocusableInTouchMode = true
+            activity_new_postcard_et_postcard_message.isClickable = true
             activity_new_postcard_img_postcard_picture.isClickable = true
 
             return
@@ -238,6 +242,8 @@ class NewPostcardActivity : AppCompatActivity() {
 
             activity_new_postcard_btn_send.isClickable = true
             activity_new_postcard_et_postcard_message.isFocusable = true
+            activity_new_postcard_et_postcard_message.isFocusableInTouchMode = true
+            activity_new_postcard_et_postcard_message.isClickable = true
             activity_new_postcard_img_postcard_picture.isClickable = true
 
             return
@@ -299,6 +305,8 @@ class NewPostcardActivity : AppCompatActivity() {
 
                                     activity_new_postcard_btn_send.isClickable = true
                                     activity_new_postcard_et_postcard_message.isFocusable = true
+                                    activity_new_postcard_et_postcard_message.isFocusableInTouchMode = true
+                                    activity_new_postcard_et_postcard_message.isClickable = true
                                     activity_new_postcard_img_postcard_picture.isClickable = true
                                 }
                         }
@@ -313,6 +321,8 @@ class NewPostcardActivity : AppCompatActivity() {
 
                 activity_new_postcard_btn_send.isClickable = true
                 activity_new_postcard_et_postcard_message.isFocusable = true
+                activity_new_postcard_et_postcard_message.isFocusableInTouchMode = true
+                activity_new_postcard_et_postcard_message.isClickable = true
                 activity_new_postcard_img_postcard_picture.isClickable = true
             }
     }
