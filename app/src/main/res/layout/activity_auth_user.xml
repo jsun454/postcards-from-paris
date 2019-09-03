@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
             android:text="I am a..."
-            android:textColor="@color/colorTextDark"
+            android:textColor="@color/colorTextLight"
             android:textSize="36sp" />
 
     <LinearLayout
