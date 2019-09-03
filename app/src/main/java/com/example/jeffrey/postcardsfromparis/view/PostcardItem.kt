@@ -1,11 +1,14 @@
 package com.example.jeffrey.postcardsfromparis.view
 
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.support.v4.content.ContextCompat
 import com.example.jeffrey.postcardsfromparis.R
 import com.example.jeffrey.postcardsfromparis.model.Postcard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.dialog_change_image.*
 import kotlinx.android.synthetic.main.partial_postcard_back.view.*
 import kotlinx.android.synthetic.main.partial_postcard_front.view.*
 import java.text.SimpleDateFormat
@@ -54,6 +57,10 @@ class PostcardItem(private val postcard: Postcard, var showFront: Boolean = true
                 if(postcard.author.imgUrl.isNotEmpty()) {
                     val profileUri = Uri.parse(postcard.author.imgUrl)
                     loadImage(profileUri, partial_postcard_back_img_profile_picture)
+                } else {
+                    val color = ContextCompat.getColor(context, R.color.colorDefault)
+                    val cd = ColorDrawable(color)
+                    partial_postcard_back_img_profile_picture.setImageDrawable(cd)
                 }
 
                 partial_postcard_back_txt_postcard_message.text = postcard.message
