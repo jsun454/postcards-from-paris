@@ -8,7 +8,6 @@ import com.example.jeffrey.postcardsfromparis.model.Postcard
 import com.example.jeffrey.postcardsfromparis.util.SharedUtil.loadImage
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.dialog_change_image.*
 import kotlinx.android.synthetic.main.partial_postcard_back.view.*
 import kotlinx.android.synthetic.main.partial_postcard_front.view.*
 import java.text.SimpleDateFormat
