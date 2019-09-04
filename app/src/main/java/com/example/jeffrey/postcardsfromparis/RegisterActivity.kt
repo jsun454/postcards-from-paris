@@ -40,7 +40,7 @@ class RegisterActivity : AppCompatActivity(), SingleTapGestureListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        supportActionBar?.title = "Registration"
+        supportActionBar?.title = "Register"
 
         // Sets listeners for background taps
         detector = GestureDetectorCompat(this, this)
