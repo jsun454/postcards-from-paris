@@ -2,6 +2,7 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:background="@color/colorAccent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".NewUserImageActivity"
@@ -15,13 +16,16 @@
             android:layout_height="wrap_content">
 
         <RelativeLayout
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="10dp"
                 android:layout_width="160dp"
                 android:layout_height="160dp">
 
             <ImageView
                     android:id="@+id/activity_new_user_image_img_profile_picture"
                     android:contentDescription="@string/user_image_description"
-                    android:background="@android:color/white"
+                    android:background="@color/colorTextLight"
                     android:src="@color/colorDefault"
                     android:scaleType="centerCrop"
                     android:cropToPadding="true"
@@ -32,6 +36,10 @@
             <TextView
                     android:id="@+id/activity_new_user_image_txt_select_photo"
                     android:text="@string/pick_image"
+                    android:fontFamily="sans-serif-light"
+                    android:textSize="16sp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -41,6 +49,12 @@
         <Button
                 android:id="@+id/activity_new_user_image_btn_use_photo"
                 android:text="Use Photo"
+                android:fontFamily="sans-serif-light"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextLight"
+                android:background="@drawable/btn_rounded"
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -48,11 +62,16 @@
 
     <TextView
             android:id="@+id/activity_new_user_image_txt_skip"
-            android:text="Maybe later"
+            android:text="Maybe later "
+            android:fontFamily="sans-serif-light"
             android:textSize="24sp"
-            android:drawableEnd="@android:drawable/ic_media_play"
+            android:textAllCaps="false"
+            android:textColor="@color/colorTextDark"
+            android:drawableEnd="@drawable/ic_arrow_right"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="6dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
