@@ -6,6 +6,7 @@
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:background="@color/colorBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".RegisterActivity">
@@ -16,34 +17,62 @@
             android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             tools:ignore="Autofill, HardcodedText">
 
         <EditText
                 android:id="@+id/activity_register_et_name"
                 android:inputType="textPersonName"
                 android:hint="Name"
+                android:fontFamily="sans-serif-light"
+                android:textSize="16sp"
+                android:textColor="@color/colorTextDark"
+                android:background="@drawable/txt_rounded"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:padding="12dp"/>
 
         <EditText
                 android:id="@+id/activity_register_et_email"
                 android:inputType="textEmailAddress"
                 android:hint="@string/email"
+                android:fontFamily="sans-serif-light"
+                android:textSize="16sp"
+                android:textColor="@color/colorTextDark"
+                android:background="@drawable/txt_rounded"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:padding="12dp"/>
 
         <EditText
                 android:id="@+id/activity_register_et_password"
                 android:inputType="textPassword"
                 android:hint="@string/password"
+                android:fontFamily="sans-serif-light"
+                android:textSize="16sp"
+                android:textColor="@color/colorTextDark"
+                android:background="@drawable/txt_rounded"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:padding="12dp"/>
 
         <Button
                 android:id="@+id/activity_register_btn_register"
                 android:text="Register"
+                android:fontFamily="sans-serif-light"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextLight"
+                android:background="@drawable/btn_rounded"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"/>
 
     </LinearLayout>
 
