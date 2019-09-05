@@ -77,7 +77,7 @@ class SentMailFragment : Fragment() {
             override fun onDataChange(p0: DataSnapshot) {
                 // Display filler text if there are no postcards to display
                 if(adapter.itemCount == 0) {
-                    fragment_sent_mail_txt_placeholder.visibility = View.VISIBLE
+                    fragment_sent_mail_txt_placeholder?.visibility = View.VISIBLE
                 }
             }
 
