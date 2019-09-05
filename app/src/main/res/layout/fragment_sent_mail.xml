@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/fragment_sent_mail_rv_mail_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".SentMailFragment"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager">
+        android:layout_height="match_parent">
 
-</android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_sent_mail_rv_mail_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".SentMailFragment"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+
+    <TextView
+            android:id="@+id/fragment_sent_mail_txt_placeholder"
+            android:text="Tap the pencil to send out a postcard!"
+            android:fontFamily="sans-serif-light"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:textColor="@color/colorTextDark"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText"/>
+
+</RelativeLayout>
