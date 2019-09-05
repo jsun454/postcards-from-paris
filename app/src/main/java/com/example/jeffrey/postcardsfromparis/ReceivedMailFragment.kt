@@ -63,7 +63,7 @@ class ReceivedMailFragment : Fragment() {
                 val postcardItem = PostcardItem(postcard, true)
                 adapter.add(0, postcardItem)
 
-                fragment_sent_mail_rv_mail_list?.smoothScrollToPosition(0)
+                fragment_received_mail_rv_mail_list?.smoothScrollToPosition(0)
                 fragment_received_mail_txt_placeholder?.visibility = View.GONE
             }
 
