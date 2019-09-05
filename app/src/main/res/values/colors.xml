@@ -5,6 +5,7 @@
     <color name="colorAccent">#D1C4E9</color>
 
     <color name="colorBackground">#D1C4E9</color>
+    <color name="colorBorder">#FFFFFF</color>
     <color name="colorButton">#7C4DFF</color>
     <color name="colorDefault">#BDBDBD</color>
     <color name="colorTextDark">#212121</color>
