@@ -194,7 +194,7 @@ class NewPostcardActivity : AppCompatActivity() {
         val locationAccess = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
         if(locationAccess == PackageManager.PERMISSION_GRANTED) {
             val lm = getSystemService(LOCATION_SERVICE) as LocationManager
-            val here = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            val here = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) ?: return "Unknown"
             val gcd = Geocoder(this, Locale.getDefault())
             val addresses = gcd.getFromLocation(here.latitude, here.longitude, 1)
             if(addresses != null && addresses.isNotEmpty() && addresses[0].locality != null) {
