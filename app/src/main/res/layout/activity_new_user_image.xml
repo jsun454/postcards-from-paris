@@ -2,7 +2,7 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:background="@color/colorAccent"
+        android:background="@color/colorBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".NewUserImageActivity"
@@ -25,7 +25,7 @@
             <ImageView
                     android:id="@+id/activity_new_user_image_img_profile_picture"
                     android:contentDescription="@string/user_image_description"
-                    android:background="@color/colorTextLight"
+                    android:background="@color/colorBorder"
                     android:src="@color/colorDefault"
                     android:scaleType="centerCrop"
                     android:cropToPadding="true"

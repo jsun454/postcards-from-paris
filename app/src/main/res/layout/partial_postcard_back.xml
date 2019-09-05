@@ -51,7 +51,7 @@
         <ImageView
                 android:id="@+id/partial_postcard_back_img_profile_picture"
                 android:contentDescription="@string/user_image_description"
-                android:background="@android:color/white"
+                android:background="@color/colorBorder"
                 android:src="@color/colorDefault"
                 android:scaleType="centerCrop"
                 android:cropToPadding="true"
