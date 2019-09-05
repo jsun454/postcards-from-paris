@@ -6,8 +6,8 @@
 
     <color name="colorBackground">#D1C4E9</color>
     <color name="colorButton">#7C4DFF</color>
+    <color name="colorDefault">#BDBDBD</color>
     <color name="colorTextDark">#212121</color>
     <color name="colorTextLight">#FFFFFF</color>
-
-    <color name="colorDefault">#BDBDBD</color>
+    <color name="colorToast">#7C7C7C</color>
 </resources>

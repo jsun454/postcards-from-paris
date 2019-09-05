@@ -91,7 +91,7 @@ object SharedUtil {
     fun Context.longToast(message: CharSequence) {
         val toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
         val view = toast.view
-        view.background.setColorFilter(ContextCompat.getColor(this, R.color.colorDefault),
+        view.background.setColorFilter(ContextCompat.getColor(this, R.color.colorToast),
             PorterDuff.Mode.SRC_IN)
         toast.show()
     }
