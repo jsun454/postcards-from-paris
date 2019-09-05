@@ -3,19 +3,20 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
+        android:background="@color/colorBackground"
         android:gravity="center_horizontal"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".OptionsActivity">
 
     <TextView
             android:id="@+id/activity_options_txt_name"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="sans-serif-light"
             android:textSize="24sp"
             android:textAllCaps="false"
             android:textColor="@color/colorTextDark"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="6dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -26,6 +27,8 @@
             android:src="@color/colorDefault"
             android:scaleType="centerCrop"
             android:cropToPadding="true"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:padding="16dp"/>
@@ -33,18 +36,44 @@
     <Button
             android:id="@+id/activity_options_btn_change_name"
             android:text="@string/change_name"
+            android:fontFamily="sans-serif-light"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:textColor="@color/colorTextLight"
+            android:background="@drawable/btn_rounded"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
     <Button
             android:id="@+id/activity_options_btn_change_picture"
             android:text="@string/change_profile_picture"
+            android:fontFamily="sans-serif-light"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:textColor="@color/colorTextLight"
+            android:background="@drawable/btn_rounded"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
     <Button
             android:id="@+id/activity_options_btn_log_out"
             android:text="Log Out"
+            android:fontFamily="sans-serif-light"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:textColor="@color/colorTextLight"
+            android:background="@drawable/btn_rounded"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:ignore="HardcodedText"/>
