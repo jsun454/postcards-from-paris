@@ -46,7 +46,7 @@ class NewPostcardActivity : AppCompatActivity() {
         private const val REQUEST_LOCATION = 1
 
         // Character limit for postcard message
-        private const val MAX_MESSAGE_LENGTH = 300
+        private const val MAX_MESSAGE_LENGTH = 250
 
         // Extra to pass back to MailboxActivity
         const val RETURN_TO_SENT_TAB = "sent"
