@@ -9,10 +9,7 @@ import android.view.ViewGroup
 import com.example.jeffrey.postcardsfromparis.model.Postcard
 import com.example.jeffrey.postcardsfromparis.view.PostcardItem
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_received_mail.*
@@ -65,13 +62,27 @@ class ReceivedMailFragment : Fragment() {
                 // Add the postcard to the top of the screen
                 val postcardItem = PostcardItem(postcard, true)
                 adapter.add(0, postcardItem)
+
                 fragment_sent_mail_rv_mail_list?.smoothScrollToPosition(0)
+                fragment_received_mail_txt_placeholder.visibility = View.GONE
             }
 
             override fun onCancelled(p0: DatabaseError) {}
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
             override fun onChildRemoved(p0: DataSnapshot) {}
+        })
+
+        // This section runs after the existing postcards have been obtained from Firebase
+        ref.addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                // Display filler text if there are no postcards to display
+                if(adapter.itemCount == 0) {
+                    fragment_received_mail_txt_placeholder.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {}
         })
     }
 
