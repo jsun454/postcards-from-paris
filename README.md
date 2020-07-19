@@ -1,4 +1,4 @@
-# Postcards From Paris <img src=".github/images/logo.png" width="50" title="Logo" alt="Logo" align="Center">
+# Postcards From Paris <img src=".github/images/logo.png" width="100" title="Logo" alt="Logo" align="Center">
 Postcards From Paris is an Android app for sharing postcards with people around the world.
 
 ## Technology
